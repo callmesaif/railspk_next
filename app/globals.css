@@ -1,0 +1,74 @@
+@import "tailwindcss";
+
+:root {
+  --rail-accent: #4f46e5;
+  --rail-dark: #0a0f1a;
+  --background: #ffffff;
+  --foreground: #111827;
+  --card-bg: #f9fafb;
+  --border: #e5e7eb;
+}
+
+.dark {
+  --background: var(--rail-dark);
+  --foreground: #ffffff;
+  --card-bg: rgba(255, 255, 255, 0.05);
+  --border: rgba(255, 255, 255, 0.1);
+}
+
+@theme inline {
+  --color-rail-accent: var(--rail-accent);
+  --color-rail-dark: var(--rail-dark);
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+}
+
+body {
+  background-color: var(--background);
+  color: var(--foreground);
+  transition: all 0.3s ease;
+}
+
+/* Clipping Fix: Italic text needs breathing room */
+.hero-title {
+  padding-right: 0.1em;
+  overflow: visible !important;
+}
+
+/* Hero Background Fix for Light Mode */
+.hero-background { 
+    position: absolute; 
+    inset: 0; 
+    background-position: center;
+    background-size: cover;
+    background-repeat: no-repeat;
+    z-index: -1;
+    transition: opacity 1s ease-in-out;
+}
+
+/* Light mode mein overlay ko white/transparent rakha hai taake greyish na lage */
+:root:not(.dark) .hero-overlay {
+    background: rgba(255, 255, 255, 0.4) !important;
+}
+
+.dark .hero-overlay {
+    background: rgba(10, 15, 26, 0.5) !important;
+}
+
+@font-face {
+  font-family: 'YourRailFont';
+  src: url('/fonts/rail.woff2') format('woff2');
+  font-display: swap; /* Lighthouse fix */
+}
+
+select, option {
+  background-color: var(--background) !important;
+  color: var(--foreground) !important;
+}
+
+/* Card Styling for consistency */
+.rail-card {
+  background-color: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: 2.5rem;
+}
