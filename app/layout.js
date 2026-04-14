@@ -4,6 +4,10 @@ import Footer from "@/components/Footer";
 import Script from "next/script"; // Script component import kiya hai
 
 export const metadata = {
+  metadataBase: new URL('https://therails.pk'), // Non-WWW URL
+  alternates: {
+    canonical: '/',
+  },
   title: "RAILSPK | Digital Legacy Project",
   description: "Official portal for Pakistan Railways fans. Explore Reviews, Fares, and Cinematic Travel Vlogs.",
   keywords: ["Pakistan Railways, Train Reviews, Railway Vlogs, Railspk, Train Fares, Railway Community, Train Vlogs, Train Travel, Pakistan Railways, Shalimar Express Reviews, Green line Reviews, Karakoram Express Reviews, Pak Business Express Reviews"],

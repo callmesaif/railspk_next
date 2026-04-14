@@ -2,6 +2,7 @@ import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   output: 'export', // Static HTML/CSS/JS generate karne ke liye
+  trailingSlash: true, // Yeh line add karein
   images: {
     unoptimized: true, // Static export mein image optimization server-side nahi chalti
   },

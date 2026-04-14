@@ -58,7 +58,9 @@ export default function ReviewsPage() {
                                 </div>
                             </div>
                             
-                            <Link href={`/reviews/${train.id}`} className="block w-full text-center bg-rail-accent text-white py-4 rounded-2xl font-black uppercase text-[10px] tracking-widest italic shadow-lg hover:bg-white hover:text-rail-dark transition-all">
+                            <Link 
+                                href={`/reviews/${train.id}/`} // Aakhir mein slash lazmi hai
+                                className="block w-full text-center bg-rail-accent text-white py-4 rounded-2xl font-black uppercase text-[10px] tracking-widest italic shadow-lg hover:bg-white hover:text-rail-dark transition-all">
                                 Explore Detailed Review
                             </Link>
                         </div>
