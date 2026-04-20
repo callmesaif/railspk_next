@@ -33,6 +33,12 @@ body {
 .hero-title {
   padding-right: 0.1em;
   overflow: visible !important;
+  background: linear-gradient(to bottom, #fff 20%, theme('colors.rail-accent.DEFAULT'));
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  line-height: 1.1; /* Line height thori barhayi gayi hai */
+  padding: 0.1em 0; /* Clipping fix karne ke liye padding */
 }
 
 /* Hero Background Fix for Light Mode */

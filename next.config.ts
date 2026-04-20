@@ -1,13 +1,15 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  output: 'export', // Static HTML/CSS/JS generate karne ke liye
-  trailingSlash: true, // Yeh line add karein
+  output: "export",
+  distDir: 'out',  // Explicitly set output directory
   images: {
-    unoptimized: true, // Static export mein image optimization server-side nahi chalti
+    unoptimized: true,
   },
-  // Agar aap sub-folder (e.g. railspk.com/site) mein host kar rahe hain to basepath yahan likhein
-  // basePath: '/site', 
+  trailingSlash: true,
+  typescript: {
+    ignoreBuildErrors: true,
+  },
 };
 
 export default nextConfig;

@@ -4,7 +4,7 @@ import Footer from "@/components/Footer";
 import Script from "next/script"; // Script component import kiya hai
 
 export const metadata = {
-  metadataBase: new URL('https://therails.pk'), // Non-WWW URL
+  metadataBase: new URL('https://therails.pk'), // Aapka official non-www URL
   alternates: {
     canonical: '/',
   },
