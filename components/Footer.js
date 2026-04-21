@@ -9,9 +9,10 @@ export default function Footer() {
                 <p className="text-gray-400 max-w-lg text-sm italic">"The digital archive of Pakistan Railways heritage. Join us in documenting every locomotive and track symmetry."</p>
             </div>
             <div className="flex justify-center space-x-10 mb-16">
-                <a href="https://facebook.com/therailspkproductions" target="_blank" className="text-2xl text-gray-400 hover:text-rail-accent transition-all hover:scale-125"><i className="fab fa-facebook"></i></a>
-                <a href="https://youtube.com/@therailspk" target="_blank" className="text-2xl text-gray-400 hover:text-red-600 transition-all hover:scale-125"><i className="fab fa-youtube"></i></a>
+                <a href="https://www.facebook.com/railoverspk/" target="_blank" className="text-2xl text-gray-400 hover:text-rail-accent transition-all hover:scale-125"><i className="fab fa-facebook"></i></a>
+                <a href="https://youtube.com/@railoverspkofficial" target="_blank" className="text-2xl text-gray-400 hover:text-red-600 transition-all hover:scale-125"><i className="fab fa-youtube"></i></a>
                 <a href="https://instagram.com/realinventivecadet" target="_blank" className="text-2xl text-gray-400 hover:text-pink-500 transition-all hover:scale-125"><i className="fab fa-instagram"></i></a>
+                <a href="https://tiktok.com/@railoverspk" target="_blank" className="text-2xl text-gray-400 hover:text-pink-500 transition-all hover:scale-125"><i className="fab fa-tiktok"></i></a>
                 <a href="https://whatsapp.com/channel/0029VbBHeff8PgsJZYRHww3O" target="_blank" className="text-2xl text-gray-400 hover:text-green-500 transition-all hover:scale-125"><i className="fab fa-whatsapp"></i></a>
             </div>
             <p className="text-gray-500 text-[9px] tracking-[0.6em] font-black uppercase italic mb-8">© 2026 RAILSPK | Digital Legacy Project</p>
