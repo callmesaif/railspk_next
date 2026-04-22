@@ -16,16 +16,12 @@ export default function HomePage() {
       try {
         const apiKey = process.env.NEXT_PUBLIC_YT_KEY;
         const channelId = process.env.NEXT_PUBLIC_YT_CHANNEL;
-        
-        // 1. Top Viewed Videos search
         const searchUrl = `https://www.googleapis.com/youtube/v3/search?key=${apiKey}&channelId=${channelId}&part=id&maxResults=20&type=video&order=viewCount`;
         const searchRes = await fetch(searchUrl);
         const searchData = await searchRes.json();
 
         if (searchData.items) {
           const videoIds = searchData.items.map(v => v.id.videoId).join(',');
-          
-          // 2. Duration filter (No Shorts)
           const detailsUrl = `https://www.googleapis.com/youtube/v3/videos?key=${apiKey}&id=${videoIds}&part=snippet,contentDetails`;
           const detailsRes = await fetch(detailsUrl);
           const detailsData = await detailsRes.json();
@@ -48,7 +44,6 @@ export default function HomePage() {
         setLoading(false);
       }
     };
-
     fetchTopVlogs();
   }, []);
 
@@ -58,38 +53,35 @@ export default function HomePage() {
   };
 
   return (
-    <main className="bg-background text-foreground">
-      {/* --- HERO SECTION REVERTED --- */}
-      <section className="relative min-h-screen flex items-center justify-center overflow-hidden pt-20">
+    <main className="bg-[#fdfbff] dark:bg-[#1b1b1f]">
+      {/* --- HERO SECTION --- */}
+      <section className="relative min-h-[90vh] flex items-center justify-center m-4 rounded-[3rem] overflow-hidden">
         <div 
           className="absolute inset-0 z-0" 
           style={{ 
               backgroundImage: `url('/images/train_background.webp')`, 
               backgroundSize: 'cover',
               backgroundPosition: 'center',
-              filter: 'brightness(0.4)' 
+              filter: 'brightness(0.5)' 
           }}
         ></div>
         
-        {/* Dark Overlay for Text Visibility */}
-        <div className="absolute inset-0 bg-black/40 z-[1]"></div>
-
         <div className="relative z-10 max-w-screen-xl mx-auto px-6 text-center text-white">
-          <div className="inline-flex items-center space-x-3 px-5 py-2 rounded-full bg-white/5 border border-white/10 backdrop-blur-md mb-8">
-            <span className="flex h-2 w-2 rounded-full bg-rail-accent animate-ping"></span>
-            <span className="text-[10px] font-black uppercase tracking-[0.4em] text-gray-300">Live Community Hub Online</span>
+          <div className="inline-flex items-center space-x-3 px-6 py-2 rounded-full bg-white/10 border border-white/20 backdrop-blur-md mb-8">
+            <span className="flex h-2 w-2 rounded-full bg-[#ffb4ab] animate-pulse"></span>
+            <span className="text-[10px] font-bold uppercase tracking-[0.3em]">Pakistan Railways Digital Hub</span>
           </div>
 
-          <h1 className="text-6xl md:text-9xl lg:text-[11rem] font-black leading-[0.8] uppercase italic tracking-tighter drop-shadow-2xl overflow-visible">
-            THE <br /> <span className="text-transparent bg-clip-text bg-gradient-to-r from-rail-accent to-rail-accent-light px-2">RAILSPK</span>
+          <h1 className="text-6xl md:text-[8rem] font-black leading-none uppercase italic tracking-tighter mb-8">
+            THE <span className="text-[#ffb4ab]">RAILSPK</span>
           </h1>
           
-          <p className="text-base md:text-xl mt-12 text-gray-400 max-w-2xl mx-auto leading-relaxed font-medium italic opacity-80">
-            Documenting the heritage and cinematic evolution of Pakistan Railways through digital storytelling.
+          <p className="text-lg md:text-xl text-gray-300 max-w-2xl mx-auto italic font-medium">
+            Documenting heritage through modern cinematic storytelling.
           </p>
 
           <div className="mt-12">
-            <Link href="/reviews" className="px-10 py-5 bg-rail-accent text-white rounded-full font-black uppercase tracking-widest text-xs shadow-lg hover:scale-105 transition-all">
+            <Link href="/reviews" className="px-10 py-4 bg-[#ba1a1a] text-white rounded-full font-bold uppercase tracking-widest text-xs shadow-lg hover:shadow-[#ba1a1a]/30 transition-all active:scale-95">
                 Explore Scorecards
             </Link>
           </div>
@@ -97,31 +89,32 @@ export default function HomePage() {
       </section>
 
       {/* --- VLOGS SECTION --- */}
-      <div className="py-32 max-w-screen-2xl mx-auto px-6 text-center">
-          <h2 className="text-4xl md:text-7xl font-black uppercase italic mb-20 tracking-tighter text-left">
-            Most Viewed <span className="text-rail-accent">Vlogs</span>
+      <div className="py-24 max-w-screen-2xl mx-auto px-6 text-center">
+          <h2 className="text-3xl md:text-5xl font-black uppercase italic mb-16 flex items-center gap-4 text-left">
+            <span className="material-symbols-rounded text-4xl md:text-6xl text-[#ba1a1a] dark:text-[#ffb4ab]">movie</span>
+            Featured <span className="text-[#ba1a1a] dark:text-[#ffb4ab]">Vlogs</span>
           </h2>
           
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-10 text-left">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 text-left">
               {loading ? (
                 [1, 2, 3, 4, 5, 6].map((i) => (
-                  <div key={i} className="bg-gray-200 dark:bg-gray-800 h-64 w-full rounded-[2.5rem] animate-pulse" />
+                  <div key={i} className="bg-[#e3e2e6] dark:bg-[#2e2f33] h-72 w-full rounded-[2.5rem] animate-pulse" />
                 ))
               ) : (
                 vlogs.map((v) => (
                   <div 
                     key={v.id.videoId} 
                     onClick={() => setSelectedVideoId(v.id.videoId)}
-                    className="group bg-white dark:bg-gray-800 rounded-[2.5rem] overflow-hidden shadow-xl hover:-translate-y-2 transition-all duration-500 cursor-pointer relative"
+                    className="group bg-[#f2f0f4] dark:bg-[#2e2f33] rounded-[2.5rem] overflow-hidden border border-transparent hover:border-[#ba1a1a] dark:hover:border-[#ffb4ab] transition-all duration-500 cursor-pointer"
                   >
-                    <div className="aspect-video relative overflow-hidden bg-gray-100 dark:bg-gray-700">
-                      <img src={v.snippet.thumbnails.high.url} alt={v.snippet.title} className="w-full h-full object-cover transition duration-700 group-hover:scale-105" />
-                      <div className="absolute inset-0 flex items-center justify-center bg-black/20 group-hover:bg-black/0 transition duration-500">
-                        <i className="fas fa-play text-white text-3xl opacity-0 group-hover:opacity-100 transition-opacity"></i>
+                    <div className="aspect-video relative overflow-hidden">
+                      <img src={v.snippet.thumbnails.high.url} alt={v.snippet.title} className="w-full h-full object-cover grayscale-[30%] group-hover:grayscale-0 transition duration-700" />
+                      <div className="absolute inset-0 flex items-center justify-center bg-black/20">
+                        <span className="material-symbols-rounded text-5xl text-white opacity-0 group-hover:opacity-100 scale-50 group-hover:scale-100 transition-all">play_circle</span>
                       </div>
                     </div>
-                    <div className="p-6">
-                      <h3 className="text-[11px] md:text-xs font-black uppercase line-clamp-2 leading-tight">
+                    <div className="p-8">
+                      <h3 className="text-xs font-bold uppercase leading-tight line-clamp-2">
                         {v.snippet.title}
                       </h3>
                     </div>
@@ -130,25 +123,28 @@ export default function HomePage() {
               )}
           </div>
 
+          {/* WATCH MORE BUTTON */}
           {!loading && (
             <button 
               onClick={() => setShowRedirectPopup(true)}
-              className="mt-20 px-12 py-5 border-2 border-rail-accent text-rail-accent rounded-full font-black uppercase tracking-widest text-xs hover:bg-rail-accent hover:text-white transition-all shadow-xl"
+              className="mt-20 inline-flex items-center gap-3 px-12 py-4 border-2 border-[#ba1a1a] dark:border-[#ffb4ab] text-[#ba1a1a] dark:text-[#ffb4ab] rounded-full font-bold uppercase tracking-widest text-xs hover:bg-[#ba1a1a] hover:text-white dark:hover:bg-[#ffb4ab] dark:hover:text-[#1b1b1f] transition-all shadow-xl active:scale-95"
             >
+              <span className="material-symbols-rounded text-lg">open_in_new</span>
               Watch More on YouTube
             </button>
           )}
       </div>
 
-      {/* --- REDIRECT POPUP --- */}
+      {/* --- REDIRECT POPUP (Material 3 Dialog Style) --- */}
       {showRedirectPopup && (
-        <div className="fixed inset-0 z-[200] flex items-center justify-center p-6 bg-black/80 backdrop-blur-md">
-          <div className="bg-rail-dark border border-white/10 p-10 rounded-[3rem] max-w-sm w-full text-center shadow-2xl">
-            <h3 className="text-xl font-black uppercase italic text-white mb-2">Leaving Site</h3>
-            <p className="text-gray-400 text-[10px] font-black uppercase tracking-widest mb-8">Diverting to The Rails PK Official Channel</p>
+        <div className="fixed inset-0 z-[200] flex items-center justify-center p-6 bg-black/60 backdrop-blur-sm">
+          <div className="bg-[#fdfbff] dark:bg-[#1b1b1f] border border-[#74777f]/20 p-10 rounded-[3rem] max-w-sm w-full text-center shadow-2xl">
+            <span className="material-symbols-rounded text-5xl text-[#ba1a1a] dark:text-[#ffb4ab] mb-4">exit_to_app</span>
+            <h3 className="text-xl font-bold uppercase italic text-foreground mb-2">Leaving Site</h3>
+            <p className="text-[#44474e] dark:text-[#c4c6cf] text-[10px] font-bold uppercase tracking-widest mb-8">Diverting to The Rails PK Official Channel</p>
             <div className="flex flex-col gap-3">
-              <button onClick={handleRedirect} className="bg-rail-accent text-white py-4 rounded-2xl font-black uppercase italic tracking-widest text-[10px]">Continue</button>
-              <button onClick={() => setShowRedirectPopup(false)} className="text-gray-500 py-2 font-black uppercase text-[9px] tracking-widest hover:text-white transition">Cancel</button>
+              <button onClick={handleRedirect} className="bg-[#ba1a1a] text-white py-4 rounded-full font-bold uppercase italic tracking-widest text-[10px] active:scale-95 transition-all">Continue</button>
+              <button onClick={() => setShowRedirectPopup(false)} className="text-[#74777f] py-2 font-bold uppercase text-[9px] tracking-widest hover:text-foreground transition">Cancel</button>
             </div>
           </div>
         </div>

@@ -12,59 +12,68 @@ export default function ReviewsPage() {
     );
 
     return (
-        <section className="min-h-screen pt-32 pb-20 bg-rail-dark text-white">
+        <section className="min-h-screen pt-32 pb-20 bg-background text-foreground">
             <div className="max-w-7xl mx-auto px-6">
-                <div className="text-center mb-16">
-                    <h2 className="text-5xl md:text-8xl font-black uppercase italic tracking-tighter">
+                <div className="text-center mb-20">
+                    <h2 className="text-5xl md:text-8xl font-black uppercase italic tracking-tighter mb-8">
                         Train <span className="text-rail-accent">Scorecards</span>
                     </h2>
-                    <input 
-                        type="text" 
-                        placeholder="Search train or route..." 
-                        className="mt-12 w-full max-w-2xl bg-white/5 border border-white/10 p-6 rounded-3xl outline-none focus:border-rail-accent transition-all text-center font-bold text-lg"
-                        onChange={(e) => setSearch(e.target.value)}
-                    />
+                    
+                    {/* M3 Search Bar Style */}
+                    <div className="relative max-w-2xl mx-auto group">
+                        <span className="material-symbols-rounded absolute left-6 top-1/2 -translate-y-1/2 text-[#74777f]">search</span>
+                        <input 
+                            type="text" 
+                            placeholder="Search train or route..." 
+                            className="w-full bg-[#f2f0f4] dark:bg-[#2e2f33] border-none p-6 pl-16 rounded-full outline-none focus:ring-2 focus:ring-rail-accent transition-all font-bold text-lg shadow-sm group-hover:shadow-md"
+                            onChange={(e) => setSearch(e.target.value)}
+                        />
+                    </div>
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                     {filtered.map(train => (
-                        <div key={train.id} className="bg-white/5 rounded-[3rem] border border-white/10 p-8 shadow-2xl hover:scale-[1.02] transition-all group">
-                            <div className="flex justify-between items-start mb-4">
-                                <h3 className="text-2xl font-black uppercase italic leading-none">{train.name}</h3>
-                                <div className="text-right">
-                                    <p className="text-[10px] font-black uppercase text-gray-500">Punctuality</p>
+                        <div key={train.id} className="bg-[#f2f0f4] dark:bg-[#2e2f33] rounded-[2.5rem] border border-transparent hover:border-rail-accent/30 p-8 shadow-sm hover:shadow-xl transition-all group flex flex-col h-full">
+                            <div className="flex justify-between items-start mb-6">
+                                <h3 className="text-2xl font-black uppercase italic leading-tight max-w-[70%]">{train.name}</h3>
+                                <div className="bg-white dark:bg-[#1b1b1f] p-3 rounded-2xl text-center min-w-[70px] shadow-sm">
+                                    <p className="text-[8px] font-black uppercase text-[#74777f]">Punctuality</p>
                                     <p className="text-xl font-black italic text-rail-accent">{train.stats.punctuality}</p>
                                 </div>
                             </div>
-                            <p className="text-gray-400 text-[10px] font-bold uppercase tracking-widest mb-6">{train.route}</p>
                             
-                            <div className="bg-rail-dark p-6 rounded-[2rem] border border-white/5 space-y-3 mb-8">
-                                <div className="flex justify-between items-center text-[9px] font-black uppercase text-gray-500">
-                                    <span>Cleanliness</span>
-                                    <div className="flex gap-0.5">
+                            <p className="text-[#44474e] dark:text-[#c4c6cf] text-[10px] font-bold uppercase tracking-widest mb-8 flex items-center gap-2">
+                                <span className="material-symbols-rounded text-sm">route</span>
+                                {train.route}
+                            </p>
+                            
+                            <div className="bg-white/40 dark:bg-black/20 p-6 rounded-[2rem] space-y-4 mb-8 flex-grow">
+                                <div className="flex justify-between items-center text-[10px] font-black uppercase text-[#74777f]">
+                                    <span className="flex items-center gap-1"><span className="material-symbols-rounded text-sm">cleaning_services</span> Cleanliness</span>
+                                    <div className="flex gap-1">
                                         {[...Array(5)].map((_, i) => (
-                                            <i key={i} className={`fas fa-star ${i < train.stats.cleanliness ? 'text-rail-accent' : 'text-white/10'}`}></i>
+                                            <span key={i} className={`material-symbols-rounded text-xs ${i < train.stats.cleanliness ? 'text-rail-accent' : 'text-gray-300 dark:text-gray-700'}`}>star</span>
                                         ))}
                                     </div>
                                 </div>
-                                <hr className="border-white/5" />
-                                <div className="space-y-2">
+                                <hr className="opacity-10" />
+                                <div className="space-y-3">
                                     {train.fares.slice(0, 3).map((f, i) => (
                                         <div key={i} className="flex justify-between text-[11px] font-bold">
-                                            <span className="text-gray-400">{f.class}</span>
-                                            <span className="text-rail-accent italic">{f.price}</span>
+                                            <span className="text-[#44474e] dark:text-[#c4c6cf] uppercase">{f.class}</span>
+                                            <span className="text-rail-accent italic font-black">{f.price}</span>
                                         </div>
                                     ))}
                                 </div>
                             </div>
                             
-                            {/* Fixed Link with Prefetch False and Trailing Slash */}
                             <Link 
                                 href={`/reviews/${train.id}/`}
                                 prefetch={false}
-                                className="block w-full text-center bg-rail-accent text-white py-4 rounded-2xl font-black uppercase text-[10px] tracking-widest italic shadow-lg hover:bg-white hover:text-rail-dark transition-all"
+                                className="inline-flex items-center justify-center gap-3 w-full bg-rail-accent text-white py-4 rounded-full font-bold uppercase text-[11px] tracking-widest shadow-lg hover:shadow-rail-accent/30 active:scale-95 transition-all"
                             >
-                                Explore Detailed Review
+                                <span className="material-symbols-rounded text-lg">analytics</span>
+                                Detailed Review
                             </Link>
                         </div>
                     ))}

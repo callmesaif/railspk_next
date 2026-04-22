@@ -1,24 +1,22 @@
 @import "tailwindcss";
 
 :root {
-  --rail-accent: #4f46e5;
-  --rail-dark: #0a0f1a;
+  --rail-accent: #4f46e5; /* Signature Blue */
   --background: #ffffff;
   --foreground: #111827;
-  --card-bg: #f9fafb;
-  --border: #e5e7eb;
+  --surface-variant: #f3f4f6;
+  --outline: #d1d5db;
 }
 
 .dark {
-  --background: var(--rail-dark);
+  --background: #0a0f1a; /* Deep Navy Dark Mode */
   --foreground: #ffffff;
-  --card-bg: rgba(255, 255, 255, 0.05);
-  --border: rgba(255, 255, 255, 0.1);
+  --surface-variant: #1f2937;
+  --outline: #374151;
 }
 
 @theme inline {
   --color-rail-accent: var(--rail-accent);
-  --color-rail-dark: var(--rail-dark);
   --color-background: var(--background);
   --color-foreground: var(--foreground);
 }
@@ -26,55 +24,39 @@
 body {
   background-color: var(--background);
   color: var(--foreground);
-  transition: all 0.3s ease;
+  transition: background-color 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  font-family: 'Inter', sans-serif;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
 }
 
-/* Clipping Fix: Italic text needs breathing room */
-.hero-title {
-  padding-right: 0.1em;
+/* Heading Clipping Fix (Video mein 'K' aur 'S' cut rahe thay) */
+.hero-title, h1, h2 {
+  font-style: italic;
+  padding-right: 0.15em; /* Slant ke liye extra space */
   overflow: visible !important;
-  background: linear-gradient(to bottom, #fff 20%, theme('colors.rail-accent.DEFAULT'));
-  -webkit-background-clip: text;
-  background-clip: text;
-  -webkit-text-fill-color: transparent;
-  line-height: 1.1; /* Line height thori barhayi gayi hai */
-  padding: 0.1em 0; /* Clipping fix karne ke liye padding */
+  line-height: 1.2;
 }
 
-/* Hero Background Fix for Light Mode */
-.hero-background { 
-    position: absolute; 
-    inset: 0; 
-    background-position: center;
-    background-size: cover;
-    background-repeat: no-repeat;
-    z-index: -1;
-    transition: opacity 1s ease-in-out;
-}
-
-/* Light mode mein overlay ko white/transparent rakha hai taake greyish na lage */
-:root:not(.dark) .hero-overlay {
-    background: rgba(255, 255, 255, 0.4) !important;
-}
-
-.dark .hero-overlay {
-    background: rgba(10, 15, 26, 0.5) !important;
-}
-
-@font-face {
-  font-family: 'YourRailFont';
-  src: url('/fonts/rail.woff2') format('woff2');
-  font-display: swap; /* Lighthouse fix */
-}
-
-select, option {
-  background-color: var(--background) !important;
-  color: var(--foreground) !important;
-}
-
-/* Card Styling for consistency */
-.rail-card {
-  background-color: var(--card-bg);
-  border: 1px solid var(--border);
+/* Material 3 Card Style */
+.m3-card {
+  background-color: var(--surface-variant);
   border-radius: 2.5rem;
+  border: 1px solid var(--outline);
+  transition: all 0.4s ease;
+}
+
+.m3-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 20px 40px -10px rgba(79, 70, 229, 0.1);
+  border-color: var(--rail-accent);
+}
+
+/* Scrollbar refinement */
+::-webkit-scrollbar { width: 10px; }
+::-webkit-scrollbar-track { background: var(--background); }
+::-webkit-scrollbar-thumb { 
+  background: var(--outline); 
+  border-radius: 100px;
+  border: 3px solid var(--background);
 }
