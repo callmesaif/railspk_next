@@ -11,7 +11,9 @@ import {
     limit, 
     doc, 
     updateDoc, 
-    increment 
+    increment,
+    getDoc,
+    setDoc
 } from 'firebase/firestore';
 import Image from 'next/image'; 
 
@@ -37,8 +39,19 @@ export default function CommunityPage() {
     const [loading, setLoading] = useState(true);
     const [activeCommentId, setActiveCommentId] = useState(null);
     const [selectedImage, setSelectedImage] = useState(null); 
+    const [userIp, setUserIp] = useState(null); // IP state for voting restriction
+    const [votingStatus, setVotingStatus] = useState(""); // Feedback for voters
 
+    // 1. Fetch User IP and Initialize Data
     useEffect(() => {
+        const fetchIp = async () => {
+            try {
+                const res = await fetch('https://api.ipify.org?format=json');
+                const data = await res.json();
+                setUserIp(data.ip);
+            } catch (err) { console.error("IP fetching error:", err); }
+        };
+
         const init = async () => {
             try {
                 await signInAnonymously(auth);
@@ -54,6 +67,8 @@ export default function CommunityPage() {
                 return () => { unsubUpdates(); unsubPolls(); };
             } catch (err) { console.error(err); setLoading(false); }
         };
+
+        fetchIp();
         init();
     }, []);
 
@@ -64,15 +79,39 @@ export default function CommunityPage() {
         } catch (error) { console.error(error); }
     }, []);
 
+    // 2. Updated castVote with IP-based check
     const castVote = useCallback(async (pollId, optionIndex, currentOptions) => {
-        if (!auth.currentUser) return;
+        if (!userIp) {
+            setVotingStatus("Detecting your connection... Please wait.");
+            return;
+        }
+
         try {
-            const ref = doc(db, "artifacts/railspk-official-1de54/public/data/polls", pollId);
+            // Voter check path: IP sanitized to be used as Doc ID
+            const voterRef = doc(db, `artifacts/railspk-official-1de54/public/data/polls/${pollId}/voters`, userIp.replace(/\./g, "_"));
+            const voterSnap = await getDoc(voterRef);
+
+            if (voterSnap.exists()) {
+                setVotingStatus("You have already voted in this poll! 🚫");
+                setTimeout(() => setVotingStatus(""), 3000);
+                return;
+            }
+
+            const pollRef = doc(db, "artifacts/railspk-official-1de54/public/data/polls", pollId);
             const updated = [...currentOptions];
             updated[optionIndex].votes = (updated[optionIndex].votes || 0) + 1;
-            await updateDoc(ref, { options: updated });
-        } catch (error) { console.error(error); }
-    }, []);
+
+            // Atomic transaction equivalent: Update poll and record IP
+            await updateDoc(pollRef, { options: updated });
+            await setDoc(voterRef, { votedAt: new Date().toISOString() });
+
+            setVotingStatus("Vote successfully casted! ✅");
+            setTimeout(() => setVotingStatus(""), 3000);
+        } catch (error) { 
+            console.error(error); 
+            setVotingStatus("Error submitting vote. Try again.");
+        }
+    }, [userIp]);
 
     return (
         <section className="min-h-screen pt-32 pb-20 bg-background text-foreground">
@@ -81,16 +120,22 @@ export default function CommunityPage() {
                     RAILWAY <span className="text-rail-accent">CLOUD</span>
                 </h1>
 
+                {/* Floating Status Notification for Voting Actions */}
+                {votingStatus && (
+                    <div className="fixed top-24 left-1/2 -translate-x-1/2 z-[200] bg-rail-accent text-white px-8 py-3 rounded-full text-[10px] font-bold uppercase tracking-widest shadow-2xl">
+                        {votingStatus}
+                    </div>
+                )}
+
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
                     {/* Updates Column */}
                     <div className="space-y-10">
-                        {/* Contrast Fix: text-[#74777f] ko text-[#44474e] mein badla gaya hai */}
                         <h2 className="flex items-center gap-3 text-[11px] font-bold uppercase tracking-[0.3em] text-[#44474e] dark:text-[#c4c6cf] px-4">
                             <span className="material-symbols-rounded text-rail-accent">campaign</span> Official Broadcasts
                         </h2>
                         
                         {updates.map((update, index) => (
-                            <div key={update.id} className="bg-[#f2f0f4] dark:bg-[#2e2f33] p-8 rounded-[2.5rem] border border-transparent shadow-sm">
+                            <div key={update.id} className="bg-[#f2f0f4] dark:bg-[#2e2f33] p-8 rounded-[2.5rem] border border-transparent shadow-sm transition-all hover:shadow-lg">
                                 {update.imageUrls?.length > 0 && (
                                     <div className={`grid gap-3 mb-6 ${update.imageUrls.length > 1 ? 'grid-cols-2' : 'grid-cols-1'}`}>
                                         {update.imageUrls.map((url, i) => (
@@ -99,7 +144,6 @@ export default function CommunityPage() {
                                                 onClick={() => setSelectedImage(url)}
                                                 className="relative aspect-video rounded-[1.5rem] overflow-hidden bg-background cursor-zoom-in group"
                                             >
-                                                {/* Payload Optimization: Specific sizes add kiye gaye hain */}
                                                 <Image 
                                                     src={url} 
                                                     alt={update.title || "Railway Update"} 
@@ -114,7 +158,6 @@ export default function CommunityPage() {
                                 )}
 
                                 <h3 className="text-2xl font-black uppercase italic mb-4 leading-tight">{update.title}</h3>
-                                {/* Contrast Fix: Content text ko dark kiya gaya hai */}
                                 <div 
                                     className="text-[#1b1b1f] dark:text-[#e3e2e6] text-sm mb-8 italic leading-relaxed" 
                                     dangerouslySetInnerHTML={{ __html: formatContent(update.content) }} 
@@ -197,6 +240,21 @@ export default function CommunityPage() {
                     </div>
                 </div>
             </div>
+
+            {/* Image Preview Overlay */}
+            {selectedImage && (
+                <div 
+                    className="fixed inset-0 z-[500] bg-black/90 backdrop-blur-md flex items-center justify-center p-6 cursor-zoom-out"
+                    onClick={() => setSelectedImage(null)}
+                >
+                    <div className="relative w-full max-w-6xl aspect-video rounded-[2.5rem] overflow-hidden">
+                        <Image src={selectedImage} alt="Full Preview" fill className="object-contain" />
+                        <button className="absolute top-6 right-6 w-12 h-12 bg-white/10 hover:bg-white/20 rounded-full flex items-center justify-center text-white transition">
+                            <span className="material-symbols-rounded">close</span>
+                        </button>
+                    </div>
+                </div>
+            )}
         </section>
     );
 }

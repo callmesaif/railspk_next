@@ -11,6 +11,10 @@ export const metadata = {
   title: "RAILSPK | Digital Legacy Project",
   description: "Official portal for Pakistan Railways fans. Explore Reviews, Fares, and Cinematic Travel Vlogs.",
   keywords: ["Pakistan Railways, Train Reviews, Railway Vlogs, Railspk, Train Fares, Railway Community, Train Vlogs, Train Travel, Pakistan Railways, Shalimar Express Reviews, Green line Reviews, Karakoram Express Reviews, Pak Business Express Reviews"],
+  // Google AdSense verification added here
+  other: {
+    "google-adsense-account": "ca-pub-8566339481152239",
+  }
 };
 
 export default function RootLayout({ children }) {
@@ -22,6 +26,14 @@ export default function RootLayout({ children }) {
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
       </head>
       <body className="bg-[#fdfbff] text-[#1b1b1f] dark:bg-[#1b1b1f] dark:text-[#e3e2e6] transition-colors duration-500 antialiased overflow-x-hidden">
+
+        {/* Google AdSense Auto Ads Tag */}
+        <Script
+          async
+          src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8566339481152239"
+          crossOrigin="anonymous"
+          strategy="afterInteractive"
+        />
         
         <Script
           async
