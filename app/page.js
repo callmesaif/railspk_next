@@ -71,6 +71,7 @@ export default function HomePage() {
             The Digital Legacy of Pakistan Railways. Documenting heritage through modern cinematic storytelling.
           </p>
 
+          {/* Main Search Widget */}
           <div className="bg-white/10 backdrop-blur-2xl border border-white/20 p-4 md:p-5 rounded-[2.5rem] md:rounded-[3.5rem] shadow-2xl flex flex-col md:flex-row items-center gap-3 md:gap-4 max-w-5xl mx-auto transition-all hover:bg-white/15">
             <div className="flex-1 flex items-center gap-3 px-6 md:px-8 py-4 md:py-5 bg-white dark:bg-black/40 rounded-full w-full shadow-inner group">
               <span className="material-symbols-rounded text-rail-accent group-focus-within:scale-110 transition-transform">train</span>
@@ -96,6 +97,20 @@ export default function HomePage() {
               Search Reviews
             </Link>
           </div>
+
+          {/* --- NEW HIGHLIGHT PILLS --- */}
+          <div className="flex flex-wrap justify-center gap-3 mt-8 animate-fade-in">
+            <Link href="/community" className="flex items-center gap-2 px-6 py-2.5 bg-white/10 backdrop-blur-md border border-white/20 rounded-full hover:bg-rail-accent/20 transition-all group">
+              <span className="w-2 h-2 rounded-full bg-rail-accent animate-pulse"></span>
+              <span className="text-[10px] font-black uppercase tracking-widest text-white/90">New Update: Cloud Live</span>
+              <span className="material-symbols-rounded text-sm text-rail-accent group-hover:translate-x-1 transition-transform">arrow_right_alt</span>
+            </Link>
+            <Link href="/reviews" className="flex items-center gap-2 px-6 py-2.5 bg-white/10 backdrop-blur-md border border-white/20 rounded-full hover:bg-rail-accent/20 transition-all group">
+              <span className="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span>
+              <span className="text-[10px] font-black uppercase tracking-widest text-white/90">New Review: Karakoram Exp.</span>
+              <span className="material-symbols-rounded text-sm text-green-500 group-hover:translate-x-1 transition-transform">arrow_right_alt</span>
+            </Link>
+          </div>
         </div>
       </section>
 
@@ -116,7 +131,7 @@ export default function HomePage() {
         ))}
       </section>
 
-      {/* --- VLOGS ARCHIVE SECTION (Border/Margin Removed from Thumbnails) --- */}
+      {/* --- VLOGS ARCHIVE SECTION --- */}
       <div className="py-24 md:py-32 max-w-screen-2xl mx-auto px-6 bg-[#f2f0f4] dark:bg-[#0a0f1a]/40 rounded-[3rem] md:rounded-[5rem] mb-20 shadow-sm">
           <div className="flex flex-col md:flex-row justify-between items-center md:items-end mb-16 md:mb-20 px-4 md:px-6 gap-6 md:gap-8 text-center md:text-left">
             <h2 className="text-4xl md:text-7xl font-black uppercase italic tracking-tighter leading-tight">
@@ -134,16 +149,16 @@ export default function HomePage() {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 md:gap-10 px-2 md:px-4">
               {loading ? (
                 [1, 2, 3, 4, 5, 6].map((i) => (
-                  <div key={i} className="bg-white dark:bg-[#1f2937] h-80 w-full rounded-[2.5rem] md:rounded-[3.5rem] animate-pulse" />
+                  <div key={i} className="bg-white dark:bg-[#1f2937] h-80 w-full rounded-b-[2.5rem] md:rounded-b-[3.5rem] rounded-t-none animate-pulse" />
                 ))
               ) : (
                 vlogs.map((v) => (
                   <div 
                     key={v.id.videoId} 
                     onClick={() => setSelectedVideoId(v.id.videoId)}
-                    className="group bg-white dark:bg-[#1f2937] rounded-[2.5rem] md:rounded-[3.5rem] overflow-hidden shadow-sm hover:shadow-2xl transition-all duration-500 cursor-pointer"
+                    /* Top Area Flattened for Thumbnail Visibility */
+                    className="group bg-white dark:bg-[#1f2937] rounded-b-[2.5rem] md:rounded-b-[3.5rem] rounded-t-none overflow-hidden shadow-sm hover:shadow-2xl transition-all duration-500 cursor-pointer border border-transparent hover:border-rail-accent/10"
                   >
-                    {/* Border & Margin removed here to touch card edges */}
                     <div className="aspect-video relative overflow-hidden">
                       <img src={v.snippet.thumbnails.high.url} alt={v.snippet.title} className="w-full h-full object-cover grayscale-[20%] group-hover:grayscale-0 transition duration-700 group-hover:scale-105" />
                       <div className="absolute inset-0 flex items-center justify-center bg-black/30 opacity-0 group-hover:opacity-100 transition-all duration-500">
