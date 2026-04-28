@@ -17,7 +17,7 @@ import {
 } from 'firebase/firestore';
 import Image from 'next/image'; 
 
-// Payload Optimization: CommentSection ko tabhi load karein jab zaroorat ho
+// Payload Optimization
 const CommentSection = dynamic(() => import('@/components/Comments'), {
     loading: () => <p className="text-[10px] font-bold uppercase p-4 text-[#1b1b1f] dark:text-[#e3e2e6]">Loading Discussion...</p>,
     ssr: false 
@@ -39,10 +39,28 @@ export default function CommunityPage() {
     const [loading, setLoading] = useState(true);
     const [activeCommentId, setActiveCommentId] = useState(null);
     const [selectedImage, setSelectedImage] = useState(null); 
-    const [userIp, setUserIp] = useState(null); // IP state for voting restriction
-    const [votingStatus, setVotingStatus] = useState(""); // Feedback for voters
+    const [userIp, setUserIp] = useState(null); 
+    const [votingStatus, setVotingStatus] = useState(""); 
 
-    // 1. Fetch User IP and Initialize Data
+    // --- SHARE LOGIC ADDED HERE ---
+    const handleShare = async (postId, postTitle) => {
+        const shareUrl = `${window.location.origin}/community/${postId}`;
+        
+        if (navigator.share) {
+            try {
+                await navigator.share({
+                    title: postTitle || 'RAILSPK Community Post',
+                    text: 'Check out this update on RAILSPK!',
+                    url: shareUrl,
+                });
+            } catch (err) { console.log('Sharing failed', err); }
+        } else {
+            navigator.clipboard.writeText(shareUrl);
+            setVotingStatus("Link Copied to Clipboard! 📋");
+            setTimeout(() => setVotingStatus(""), 3000);
+        }
+    };
+
     useEffect(() => {
         const fetchIp = async () => {
             try {
@@ -79,38 +97,27 @@ export default function CommunityPage() {
         } catch (error) { console.error(error); }
     }, []);
 
-    // 2. Updated castVote with IP-based check
     const castVote = useCallback(async (pollId, optionIndex, currentOptions) => {
         if (!userIp) {
-            setVotingStatus("Detecting your connection... Please wait.");
+            setVotingStatus("Detecting connection...");
             return;
         }
-
         try {
-            // Voter check path: IP sanitized to be used as Doc ID
             const voterRef = doc(db, `artifacts/railspk-official-1de54/public/data/polls/${pollId}/voters`, userIp.replace(/\./g, "_"));
             const voterSnap = await getDoc(voterRef);
-
             if (voterSnap.exists()) {
-                setVotingStatus("You have already voted in this poll! 🚫");
+                setVotingStatus("Already Voted! 🚫");
                 setTimeout(() => setVotingStatus(""), 3000);
                 return;
             }
-
             const pollRef = doc(db, "artifacts/railspk-official-1de54/public/data/polls", pollId);
             const updated = [...currentOptions];
             updated[optionIndex].votes = (updated[optionIndex].votes || 0) + 1;
-
-            // Atomic transaction equivalent: Update poll and record IP
             await updateDoc(pollRef, { options: updated });
             await setDoc(voterRef, { votedAt: new Date().toISOString() });
-
-            setVotingStatus("Vote successfully casted! ✅");
+            setVotingStatus("Vote Recorded! ✅");
             setTimeout(() => setVotingStatus(""), 3000);
-        } catch (error) { 
-            console.error(error); 
-            setVotingStatus("Error submitting vote. Try again.");
-        }
+        } catch (error) { console.error(error); }
     }, [userIp]);
 
     return (
@@ -120,7 +127,6 @@ export default function CommunityPage() {
                     RAILWAY <span className="text-rail-accent">CLOUD</span>
                 </h1>
 
-                {/* Floating Status Notification for Voting Actions */}
                 {votingStatus && (
                     <div className="fixed top-24 left-1/2 -translate-x-1/2 z-[200] bg-rail-accent text-white px-8 py-3 rounded-full text-[10px] font-bold uppercase tracking-widest shadow-2xl">
                         {votingStatus}
@@ -144,32 +150,37 @@ export default function CommunityPage() {
                                                 onClick={() => setSelectedImage(url)}
                                                 className="relative aspect-video rounded-[1.5rem] overflow-hidden bg-background cursor-zoom-in group"
                                             >
-                                                <Image 
-                                                    src={url} 
-                                                    alt={update.title || "Railway Update"} 
-                                                    fill 
-                                                    sizes="(max-width: 768px) 100vw, 450px"
-                                                    priority={index === 0}
-                                                    className="object-cover group-hover:scale-105 transition duration-500" 
-                                                />
+                                                <Image src={url} alt={update.title} fill sizes="(max-width: 768px) 100vw, 450px" priority={index === 0} className="object-cover group-hover:scale-105 transition duration-500" />
                                             </div>
                                         ))}
                                     </div>
                                 )}
 
-                                <h3 className="text-2xl font-black uppercase italic mb-4 leading-tight">{update.title}</h3>
+                                {/* UPDATED TITLE WITH SHARE BUTTON */}
+                                <div className="flex justify-between items-start mb-4 gap-4">
+                                    <h3 className="text-2xl font-black uppercase italic leading-tight">{update.title}</h3>
+                                    <button 
+                                        onClick={() => handleShare(update.id, update.title)}
+                                        className="w-10 h-10 flex-shrink-0 flex items-center justify-center bg-white dark:bg-[#1b1b1f] rounded-full text-rail-accent shadow-sm hover:scale-110 active:scale-95 transition-all"
+                                    >
+                                        <span className="material-symbols-rounded text-lg">share</span>
+                                    </button>
+                                </div>
+
                                 <div 
                                     className="text-[#1b1b1f] dark:text-[#e3e2e6] text-sm mb-8 italic leading-relaxed" 
                                     dangerouslySetInnerHTML={{ __html: formatContent(update.content) }} 
                                 />
                                 
                                 <div className="flex gap-3 pb-8 border-b border-[#44474e]/10">
-                                    <button 
-                                        onClick={() => handleReaction(update.id, 'heart')} 
-                                        aria-label="React with Heart"
-                                        className="flex items-center gap-2 bg-white dark:bg-[#1b1b1f] px-5 py-2.5 rounded-full hover:bg-rail-accent/10 transition shadow-sm active:scale-95"
-                                    >
+                                    <button onClick={() => handleReaction(update.id, 'heart')} className="flex items-center gap-2 bg-white dark:bg-[#1b1b1f] px-5 py-2.5 rounded-full hover:bg-rail-accent/10 transition shadow-sm active:scale-95">
                                         <span className="text-sm">❤️</span> <span className="text-[10px] font-bold text-[#1b1b1f] dark:text-[#e3e2e6]">{update.reactions?.heart || 0}</span>
+                                    </button>
+                                    <button onClick={() => handleReaction(update.id, 'thumbs-up')} className="flex items-center gap-2 bg-white dark:bg-[#1b1b1f] px-5 py-2.5 rounded-full hover:bg-rail-accent/10 transition shadow-sm active:scale-95">
+                                        <span className="text-sm">👍</span> <span className="text-[10px] font-bold text-[#1b1b1f] dark:text-[#e3e2e6]">{update.reactions?.['thumbs-up'] || 0}</span>
+                                    </button>
+                                    <button onClick={() => handleReaction(update.id, 'thumbs-down')} className="flex items-center gap-2 bg-white dark:bg-[#1b1b1f] px-5 py-2.5 rounded-full hover:bg-rail-accent/10 transition shadow-sm active:scale-95">
+                                        <span className="text-sm">👎</span> <span className="text-[10px] font-bold text-[#1b1b1f] dark:text-[#e3e2e6]">{update.reactions?.['thumbs-down'] || 0}</span>
                                     </button>
                                 </div>
 
@@ -177,10 +188,7 @@ export default function CommunityPage() {
                                     {activeCommentId === update.id ? (
                                         <CommentSection docId={update.id} type="updates" />
                                     ) : (
-                                        <button 
-                                            onClick={() => setActiveCommentId(update.id)} 
-                                            className="inline-flex items-center gap-2 text-[11px] font-bold uppercase tracking-widest text-rail-accent px-4 py-2 hover:bg-rail-accent/5 rounded-full transition"
-                                        >
+                                        <button onClick={() => setActiveCommentId(update.id)} className="inline-flex items-center gap-2 text-[11px] font-bold uppercase tracking-widest text-rail-accent px-4 py-2 hover:bg-rail-accent/5 rounded-full transition">
                                             <span className="material-symbols-rounded text-lg">chat_bubble</span>
                                             Show Discussion
                                         </button>
@@ -212,13 +220,7 @@ export default function CommunityPage() {
                                         {poll.options?.map((opt, idx) => {
                                             const percent = totalVotes > 0 ? Math.round((opt.votes / totalVotes) * 100) : 0;
                                             return (
-                                                <div 
-                                                    key={idx} 
-                                                    className="cursor-pointer group" 
-                                                    role="button"
-                                                    aria-label={`Vote for ${opt.text}`}
-                                                    onClick={() => castVote(poll.id, idx, poll.options)}
-                                                >
+                                                <div key={idx} className="cursor-pointer group" role="button" onClick={() => castVote(poll.id, idx, poll.options)}>
                                                     <div className="flex justify-between text-[11px] font-bold uppercase mb-3 px-1 text-[#1b1b1f] dark:text-[#e3e2e6]">
                                                         <span>{opt.text}</span>
                                                         <span className="text-rail-accent">{percent}%</span>
@@ -243,10 +245,7 @@ export default function CommunityPage() {
 
             {/* Image Preview Overlay */}
             {selectedImage && (
-                <div 
-                    className="fixed inset-0 z-[500] bg-black/90 backdrop-blur-md flex items-center justify-center p-6 cursor-zoom-out"
-                    onClick={() => setSelectedImage(null)}
-                >
+                <div className="fixed inset-0 z-[500] bg-black/90 backdrop-blur-md flex items-center justify-center p-6 cursor-zoom-out" onClick={() => setSelectedImage(null)}>
                     <div className="relative w-full max-w-6xl aspect-video rounded-[2.5rem] overflow-hidden">
                         <Image src={selectedImage} alt="Full Preview" fill className="object-contain" />
                         <button className="absolute top-6 right-6 w-12 h-12 bg-white/10 hover:bg-white/20 rounded-full flex items-center justify-center text-white transition">

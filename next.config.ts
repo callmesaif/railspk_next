@@ -1,14 +1,14 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  output: "export",
-  distDir: 'out',  // Explicitly set output directory
+  output: "export",      // Static HTML export ke liye
+  distDir: 'out',        // Build folder ka naam
+  trailingSlash: true,   // /about/index.html wala structure banaye ga
   images: {
-    unoptimized: true,
+    unoptimized: true,   // Static export mein image optimization off karni parti hai
   },
-  trailingSlash: true,
   typescript: {
-    ignoreBuildErrors: true,
+    ignoreBuildErrors: true, // Build ko crash hone se bachane ke liye
   },
 };
 

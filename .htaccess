@@ -1,18 +1,30 @@
 RewriteEngine On
 RewriteBase /
 
-# 1. ASSET FIX: Kisi bhi folder se _next ya images mangi jaye, root pe bhej do
-# Yeh aapke console ke red errors ko 100% khatam kar dega
-RewriteRule ^.*/(_next/.*)$ /$1 [L,QSA,R=301]
-RewriteRule ^.*/(images/.*)$ /$1 [L,QSA,R=301]
+# 1. 404 ERROR HANDLING (Sabse Zaroori)
+# Agar koi file na mile to user ko aapke custom 404 page par bhej dega
+ErrorDocument 404 /404.html
 
-# 2. Directory Indexing Fix
-# Agar user /community/ par jaye to community/index.html load karo
+# 2. ASSET FIX: _next aur images ke paths ko root par redirect karein
+# Yeh console ke red errors (404 on JS/CSS) ko fix karta hai
+RewriteCond %{REQUEST_URI} !^/(_next|images)/
+RewriteRule ^.*/(_next/.*)$ /$1 [L,R=301]
+RewriteRule ^.*/(images/.*)$ /$1 [L,R=301]
+
+# 3. TRAILING SLASH & DIRECTORY INDEXING
+# Agar user /community/ mangay to community/index.html dikhaye
 RewriteCond %{REQUEST_FILENAME} !-f
-RewriteCond %{REQUEST_FILENAME} !-d
+RewriteCond %{REQUEST_FILENAME} -d
 RewriteRule ^(.*)/$ $1/index.html [L]
 
-# 3. Clean URLs Fix
+# 4. CLEAN URLS (Baghair .html ke pages load karna)
+# Agar user /about visit kare to check kare ke about.html mojud hai ya nahi
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME}\.html -f
 RewriteRule ^(.*)$ $1.html [L]
+
+# 5. FALLBACK TO INDEX (SPA Behavior)
+# Agar koi bhi route match na ho aur file mojud na ho, to main page ya 404 pe bhej dein
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule . /404.html [L]

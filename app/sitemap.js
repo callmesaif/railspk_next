@@ -5,15 +5,24 @@ import { trainsData } from '@/lib/trains';
 export default function sitemap() {
   const baseUrl = 'https://therails.pk';
 
-  const trainUrls = trainsData.map((train) => ({
-    url: `${baseUrl}/reviews/${train.id}/`,
-    lastModified: new Date(),
-  }));
-
-  return [
-    { url: `${baseUrl}/`, lastModified: new Date() },
-    { url: `${baseUrl}/community/`, lastModified: new Date() },
-    { url: `${baseUrl}/reviews/`, lastModified: new Date() },
-    ...trainUrls,
+  // Saare naye aur purane routes
+  const routes = [
+    '',
+    '/reviews',
+    '/community',
+    '/support',
+    '/fares',
+    '/schedule',
+    '/locomotives',
+    '/heritage',
+    '/contact',
+    '/refunds',
   ];
+
+  return routes.map((route) => ({
+    url: `${baseUrl}${route}`,
+    lastModified: new Date().toISOString().split('T')[0],
+    changeFrequency: route === '' ? 'daily' : 'weekly',
+    priority: route === '' ? 1.0 : 0.8,
+  }));
 }
