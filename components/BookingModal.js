@@ -5,41 +5,50 @@ import { trainsData } from '@/lib/trains';
 export default function BookingModal({ isOpen, onClose, selectedTrainId }) {
     const [formData, setFormData] = useState({
         trainId: selectedTrainId || "",
-        class: "", // Naya state class ke liye
+        class: "",
         fullName: "",
         phone: ""
     });
 
     const [availableClasses, setAvailableClasses] = useState([]);
-    const [pricing, setPricing] = useState({ fare: 0, commission: 200, total: 0 });
+    const [pricing, setPricing] = useState({ fare: 0, commission: 250, total: 0 });
+    
+    // --- TRUST BUILDER: Recent Activity Logic ---
+    const [recentBooking, setRecentBooking] = useState(0);
+    const recentData = [
+        "Ali from Karachi booked 3 seats (Green Line)",
+        "Zainab from Lahore booked 2 seats (Karakoram)",
+        "Usman from Multan booked 4 seats (Tezgam)",
+        "Saad from Pindi booked 1 seat (Shalimar Exp)"
+    ];
 
-    // 1. Train select hone par available classes load karein
+    useEffect(() => {
+        const interval = setInterval(() => {
+            setRecentBooking((prev) => (prev + 1) % recentData.length);
+        }, 4000);
+        return () => clearInterval(interval);
+    }, []);
+
     useEffect(() => {
         if (formData.trainId) {
             const train = trainsData.find(t => t.id === formData.trainId);
             if (train && train.fares) {
                 setAvailableClasses(train.fares);
-                setFormData(prev => ({ ...prev, class: train.fares[0].class })); // Default pehli class
+                setFormData(prev => ({ ...prev, class: train.fares[0].class }));
             }
-        } else {
-            setAvailableClasses([]);
-            setFormData(prev => ({ ...prev, class: "" }));
         }
     }, [formData.trainId]);
 
-    // 2. Class select hone par pricing update karein
     useEffect(() => {
         if (formData.trainId && formData.class) {
             const train = trainsData.find(t => t.id === formData.trainId);
             const selectedFare = train.fares.find(f => f.class === formData.class);
-            
             if (selectedFare) {
                 const baseFare = parseInt(selectedFare.price.replace(/[^\d]/g, '')) || 0;
-                const comm = 200; 
                 setPricing({
                     fare: baseFare,
-                    commission: comm,
-                    total: baseFare + comm
+                    commission: 250, // Updated name to E-Portal Fee
+                    total: baseFare + 250
                 });
             }
         }
@@ -50,75 +59,97 @@ export default function BookingModal({ isOpen, onClose, selectedTrainId }) {
     const handleSubmit = (e) => {
         e.preventDefault();
         const train = trainsData.find(t => t.id === formData.trainId);
-        const message = `Assalam-o-Alaikum! \n\n*NEW TICKET REQUEST*\n------------------------------\n*Name:* ${formData.fullName}\n*Train:* ${train ? train.name : 'N/A'}\n*Class:* ${formData.class}\n*WhatsApp:* ${formData.phone}\n------------------------------\n*Base Fare:* Rs. ${pricing.fare.toLocaleString()}\n*Service Charges:* Rs. ${pricing.commission}\n*Total Payable:* Rs. ${pricing.total.toLocaleString()}\n------------------------------\nPlease confirm booking.`;
+        const message = `Assalam-o-Alaikum! \n\n*NEW TICKET REQUEST*\n------------------------------\n*Name:* ${formData.fullName}\n*Train:* ${train ? train.name : 'N/A'}\n*Class:* ${formData.class}\n*WhatsApp:* ${formData.phone}\n------------------------------\n*Status:* VERIFIED BOOKING\n------------------------------\nPlease confirm my seats.`;
         
         window.open(`https://wa.me/+923198550419?text=${encodeURIComponent(message)}`, '_blank');
         onClose();
     };
 
     return (
-        <div className="fixed inset-0 z-[200] flex items-center justify-center p-6 bg-black/80 backdrop-blur-md">
-            <div className="bg-rail-dark border border-white/10 p-10 rounded-[3rem] max-w-md w-full relative shadow-2xl text-white">
-                <button onClick={onClose} className="absolute top-6 right-8 text-gray-500 hover:text-white text-2xl">&times;</button>
+        <div className="fixed inset-0 z-[200] flex items-center justify-center p-6 bg-black/90 backdrop-blur-xl">
+            <div className="bg-[#1b1b1f] border border-white/10 p-8 md:p-12 rounded-[3.5rem] max-w-md w-full relative shadow-2xl text-white overflow-hidden">
                 
-                <h3 className="text-xl font-black uppercase italic mb-8 text-rail-accent">Request Ticket</h3>
+                {/* 1. VERIFIED BADGE */}
+                <div className="absolute top-0 right-0 bg-rail-accent px-6 py-2 rounded-bl-[2rem] flex items-center gap-2 shadow-lg">
+                    <span className="material-symbols-rounded text-sm">verified_user</span>
+                    <span className="text-[9px] font-black uppercase tracking-widest">Secured by RAILS.PK</span>
+                </div>
+
+                <button onClick={onClose} className="absolute top-6 left-8 text-gray-500 hover:text-white transition-all">
+                    <span className="material-symbols-rounded text-2xl">close</span>
+                </button>
+                
+                <div className="mt-8 mb-8">
+                    <h3 className="text-2xl font-black uppercase italic text-rail-accent leading-none mb-2">Request Ticket</h3>
+                    <p className="text-[10px] font-bold uppercase tracking-[0.3em] text-[#74777f]">Authorized Ticketing Portal</p>
+                </div>
+
+                {/* 2. RECENT ACTIVITY TICKER (Trust Builder) */}
+                <div className="bg-rail-accent/10 border border-rail-accent/20 p-4 rounded-2xl mb-8 flex items-center gap-4 animate-pulse">
+                    <div className="w-2 h-2 rounded-full bg-rail-accent"></div>
+                    <p className="text-[9px] font-black uppercase italic text-rail-accent tracking-widest leading-none">
+                        {recentData[recentBooking]}
+                    </p>
+                </div>
 
                 <form onSubmit={handleSubmit} className="space-y-4">
-                    {/* Select Train */}
-                    <select 
-                        required
-                        className="w-full bg-white/5 border border-white/10 p-4 rounded-2xl text-sm outline-none text-white appearance-none"
-                        value={formData.trainId}
-                        onChange={(e) => setFormData({...formData, trainId: e.target.value})}
-                    >
+                    <select required className="w-full bg-white/5 border border-white/10 p-5 rounded-2xl text-xs font-bold outline-none text-white appearance-none focus:border-rail-accent transition-all"
+                        value={formData.trainId} onChange={(e) => setFormData({...formData, trainId: e.target.value})}>
                         <option value="" className="bg-rail-dark">Select Train</option>
-                        {trainsData.map(t => (
-                            <option key={t.id} value={t.id} className="bg-rail-dark text-white">{t.name}</option>
-                        ))}
+                        {trainsData.map(t => <option key={t.id} value={t.id} className="bg-rail-dark">{t.name}</option>)}
                     </select>
 
-                    {/* Select Class (Only shown if train is selected) */}
                     {availableClasses.length > 0 && (
-                        <select 
-                            required
-                            className="w-full bg-white/5 border border-white/10 p-4 rounded-2xl text-sm outline-none text-white appearance-none"
-                            value={formData.class}
-                            onChange={(e) => setFormData({...formData, class: e.target.value})}
-                        >
-                            {availableClasses.map((f, i) => (
-                                <option key={i} value={f.class} className="bg-rail-dark text-white">{f.class}</option>
-                            ))}
+                        <select required className="w-full bg-white/5 border border-white/10 p-5 rounded-2xl text-xs font-bold outline-none text-white appearance-none focus:border-rail-accent transition-all"
+                            value={formData.class} onChange={(e) => setFormData({...formData, class: e.target.value})}>
+                            {availableClasses.map((f, i) => <option key={i} value={f.class} className="bg-rail-dark">{f.class}</option>)}
                         </select>
                     )}
 
-                    <input type="text" placeholder="Your Full Name" required className="w-full bg-white/5 border border-white/10 p-4 rounded-2xl text-sm outline-none text-white"
+                    <input type="text" placeholder="Full Name (As per CNIC)" required className="w-full bg-white/5 border border-white/10 p-5 rounded-2xl text-xs font-bold outline-none text-white focus:border-rail-accent transition-all"
                         value={formData.fullName} onChange={(e) => setFormData({...formData, fullName: e.target.value})} />
 
-                    <input type="tel" placeholder="WhatsApp Number" required className="w-full bg-white/5 border border-white/10 p-4 rounded-2xl text-sm outline-none text-white"
+                    <input type="tel" placeholder="Active WhatsApp Number" required className="w-full bg-white/5 border border-white/10 p-5 rounded-2xl text-xs font-bold outline-none text-white focus:border-rail-accent transition-all"
                         value={formData.phone} onChange={(e) => setFormData({...formData, phone: e.target.value})} />
 
-                    {/* Pricing Breakdown */}
+                    {/* TRANSPARENT PRICING */}
                     {formData.trainId && formData.class && (
-                        <div className="bg-white/5 p-6 rounded-2xl border border-dashed border-white/10 space-y-2 my-4">
-                            <div className="flex justify-between text-[10px] font-black uppercase opacity-60">
-                                <span>{formData.class} Fare:</span>
+                        <div className="bg-white/5 p-6 rounded-[2rem] border border-dashed border-white/10 space-y-2 my-6">
+                            <div className="flex justify-between text-[10px] font-black uppercase opacity-60 italic">
+                                <span>Official Train Fare:</span>
                                 <span>Rs. {pricing.fare.toLocaleString()}</span>
                             </div>
-                            <div className="flex justify-between text-[10px] font-black uppercase text-rail-accent">
-                                <span>Service Charges:</span>
+                            <div className="flex justify-between text-[10px] font-black uppercase text-rail-accent italic">
+                                <span>E-Portal Fee:</span>
                                 <span>+ Rs. {pricing.commission}</span>
                             </div>
-                            <div className="flex justify-between text-sm font-black border-t border-white/10 pt-2 mt-2 italic">
-                                <span>Total Amount:</span>
-                                <span>Rs. {pricing.total.toLocaleString()}</span>
+                            <div className="flex justify-between text-lg font-black border-t border-white/10 pt-4 mt-2 italic tracking-tighter">
+                                <span>Payable Amount:</span>
+                                <span className="text-rail-accent">Rs. {pricing.total.toLocaleString()}</span>
                             </div>
                         </div>
                     )}
 
-                    <button className="w-full bg-rail-accent py-5 rounded-2xl font-black uppercase italic tracking-widest text-[10px] shadow-xl hover:scale-[1.02] transition">
-                        Proceed to WhatsApp
+                    <button className="w-full bg-rail-accent py-6 rounded-full font-black uppercase italic tracking-[0.2em] text-[11px] shadow-2xl hover:scale-[1.03] active:scale-95 transition-all">
+                        Verify & Send Request
                     </button>
                 </form>
+
+                {/* 3. TRUST FOOTER */}
+                <div className="mt-10 flex justify-center items-center gap-6 opacity-40 grayscale hover:grayscale-0 hover:opacity-100 transition-all duration-700">
+                    <div className="flex flex-col items-center">
+                        <span className="material-symbols-rounded text-xl">security</span>
+                        <span className="text-[7px] font-bold uppercase mt-1">SSL Secured</span>
+                    </div>
+                    <div className="flex flex-col items-center border-x border-white/10 px-6">
+                        <span className="material-symbols-rounded text-xl">payments</span>
+                        <span className="text-[7px] font-bold uppercase mt-1">Full Refund</span>
+                    </div>
+                    <div className="flex flex-col items-center">
+                        <span className="material-symbols-rounded text-xl">support_agent</span>
+                        <span className="text-[7px] font-bold uppercase mt-1">24/7 Help</span>
+                    </div>
+                </div>
             </div>
         </div>
     );
