@@ -16,7 +16,7 @@ export default function ReviewsPage() {
             <div className="max-w-7xl mx-auto px-6">
                 <div className="text-center mb-20">
                     <h2 className="text-5xl md:text-8xl font-black uppercase italic tracking-tighter mb-8">
-                        Train <span className="text-rail-accent">Scorecards</span>
+                        Train <span className="text-rail-accent">Reviews</span>
                     </h2>
                     
                     {/* M3 Search Bar Style */}

@@ -33,8 +33,8 @@ export default function Navbar() {
 
   const navLinks = [
     { name: "Home", href: "/" },
-    { name: "Scorecards", href: "/reviews" },
-    { name: "Community", href: "/community" },
+    { name: "Train Reviews", href: "/reviews" },
+    { name: "Latest Updates", href: "/community" },
     { name: "Support", href: "/support" }
   ];
 
@@ -44,7 +44,7 @@ export default function Navbar() {
         <div className="max-w-screen-2xl w-full flex justify-between items-center h-20 px-8 bg-white/80 dark:bg-[#0a0f1a]/80 backdrop-blur-2xl border border-[#d1d5db]/20 dark:border-[#374151]/30 rounded-full shadow-2xl">
           {/* Logo Section */}
           <Link href="/" className="text-2xl font-black italic text-rail-accent uppercase tracking-tighter">
-            RAILSPK
+            THE RAILSPK
           </Link>
 
           {/* Desktop Navigation Links */}

@@ -28,3 +28,7 @@ RewriteRule ^(.*)$ $1.html [L]
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
 RewriteRule . /404.html [L]
+
+# View page ke liye query string support
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteRule ^community/view/ /community/view/index.html [L]

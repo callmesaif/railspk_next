@@ -2,6 +2,9 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import VideoModal from '@/components/VideoModal';
+import { db } from '@/lib/firebase'; 
+import { collection, query, orderBy, limit, onSnapshot } from 'firebase/firestore';
+import { trainsData } from '@/lib/trains';
 
 export default function HomePage() {
   const [vlogs, setVlogs] = useState([]);
@@ -10,19 +13,48 @@ export default function HomePage() {
   const [showRedirectPopup, setShowRedirectPopup] = useState(false);
   const [searchData, setSearchData] = useState({ from: "", to: "" });
 
-  const CHANNEL_URL = "https://www.youtube.com/@TheRailsPK";
+  // Dynamic Highlights State
+  const [latestUpdateTitle, setLatestUpdateTitle] = useState("Loading...");
+  const [latestReview, setLatestReview] = useState({ id: "", name: "Loading..." });
+
+  const CHANNEL_URL = "https://www.youtube.com/@railoverspkofficial";
 
   useEffect(() => {
+    // 1. Real-time Community Updates Listener
+    const qUpdates = query(
+      collection(db, "artifacts/railspk-official-1de54/public/data/updates"), 
+      orderBy("timestamp", "desc"), 
+      limit(1)
+    );
+    
+    const unsubUpdates = onSnapshot(qUpdates, (snap) => {
+      if (!snap.empty) {
+        setLatestUpdateTitle(snap.docs[0].data().title);
+      } else {
+        setLatestUpdateTitle("Cloud Live");
+      }
+    });
+
+    // 2. Latest Review from Local trainsData
+    if (trainsData && trainsData.length > 0) {
+      setLatestReview({ 
+        id: trainsData[0].id, 
+        name: trainsData[0].name 
+      });
+    }
+
+    // 3. YouTube Vlog Fetch Logic
     const fetchTopVlogs = async () => {
       try {
         const apiKey = process.env.NEXT_PUBLIC_YT_KEY;
         const channelId = process.env.NEXT_PUBLIC_YT_CHANNEL;
+        
         const searchUrl = `https://www.googleapis.com/youtube/v3/search?key=${apiKey}&channelId=${channelId}&part=id&maxResults=20&type=video&order=viewCount`;
         const searchRes = await fetch(searchUrl);
-        const searchData = await searchRes.json();
+        const searchResData = await searchRes.json();
 
-        if (searchData.items) {
-          const videoIds = searchData.items.map(v => v.id.videoId).join(',');
+        if (searchResData.items) {
+          const videoIds = searchResData.items.map(v => v.id.videoId).join(',');
           const detailsUrl = `https://www.googleapis.com/youtube/v3/videos?key=${apiKey}&id=${videoIds}&part=snippet,contentDetails`;
           const detailsRes = await fetch(detailsUrl);
           const detailsData = await detailsRes.json();
@@ -45,7 +77,11 @@ export default function HomePage() {
         setLoading(false);
       }
     };
+
     fetchTopVlogs();
+
+    // Cleanup Listener
+    return () => unsubUpdates();
   }, []);
 
   return (
@@ -98,16 +134,21 @@ export default function HomePage() {
             </Link>
           </div>
 
-          {/* --- NEW HIGHLIGHT PILLS --- */}
+          {/* --- DYNAMIC HIGHLIGHT PILLS --- */}
           <div className="flex flex-wrap justify-center gap-3 mt-8 animate-fade-in">
             <Link href="/community" className="flex items-center gap-2 px-6 py-2.5 bg-white/10 backdrop-blur-md border border-white/20 rounded-full hover:bg-rail-accent/20 transition-all group">
               <span className="w-2 h-2 rounded-full bg-rail-accent animate-pulse"></span>
-              <span className="text-[10px] font-black uppercase tracking-widest text-white/90">New Update: Cloud Live</span>
+              <span className="text-[10px] font-black uppercase tracking-widest text-white/90 truncate max-w-[200px]">
+                New Update: {latestUpdateTitle}
+              </span>
               <span className="material-symbols-rounded text-sm text-rail-accent group-hover:translate-x-1 transition-transform">arrow_right_alt</span>
             </Link>
-            <Link href="/reviews" className="flex items-center gap-2 px-6 py-2.5 bg-white/10 backdrop-blur-md border border-white/20 rounded-full hover:bg-rail-accent/20 transition-all group">
+
+            <Link href={`/reviews/${latestReview.id}`} className="flex items-center gap-2 px-6 py-2.5 bg-white/10 backdrop-blur-md border border-white/20 rounded-full hover:bg-green-500/20 transition-all group border-green-500/30">
               <span className="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span>
-              <span className="text-[10px] font-black uppercase tracking-widest text-white/90">New Review: Karakoram Exp.</span>
+              <span className="text-[10px] font-black uppercase tracking-widest text-white/90">
+                New Review: {latestReview.name}
+              </span>
               <span className="material-symbols-rounded text-sm text-green-500 group-hover:translate-x-1 transition-transform">arrow_right_alt</span>
             </Link>
           </div>
@@ -156,7 +197,6 @@ export default function HomePage() {
                   <div 
                     key={v.id.videoId} 
                     onClick={() => setSelectedVideoId(v.id.videoId)}
-                    /* Top Area Flattened for Thumbnail Visibility */
                     className="group bg-white dark:bg-[#1f2937] rounded-b-[2.5rem] md:rounded-b-[3.5rem] rounded-t-none overflow-hidden shadow-sm hover:shadow-2xl transition-all duration-500 cursor-pointer border border-transparent hover:border-rail-accent/10"
                   >
                     <div className="aspect-video relative overflow-hidden">

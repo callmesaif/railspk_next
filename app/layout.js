@@ -2,13 +2,14 @@ import "./globals.css";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import Script from "next/script";
+import VisitTracker from "@/components/VisitTracker"; // Import the tracker
 
 export const metadata = {
   metadataBase: new URL('https://therails.pk'),
   alternates: {
     canonical: '/',
   },
-  title: "RAILSPK | Digital Legacy Project",
+  title: "THE RAILSPK | Digital Legacy Project",
   description: "Official portal for Pakistan Railways fans. Explore Reviews, Fares, and Cinematic Travel Vlogs.",
   keywords: [
     "Pakistan Railways", "Train Reviews", "Railway Vlogs", "Railspk", 
@@ -18,16 +19,16 @@ export const metadata = {
 
   // --- OPEN GRAPH (Facebook, WhatsApp, LinkedIn) ---
   openGraph: {
-    title: 'RAILSPK | Digital Legacy Project',
+    title: 'THE RAILSPK | Digital Legacy Project',
     description: 'Documenting the heritage of Pakistan Railways through cinematic storytelling.',
     url: 'https://therails.pk',
-    siteName: 'RAILSPK',
+    siteName: 'THE RAILSPK',
     images: [
       {
         url: '/og-image.webp',
         width: 1200,
         height: 630,
-        alt: 'RAILSPK Cinematic Vlogs',
+        alt: 'THE RAILSPK Cinematic Vlogs',
       },
     ],
     locale: 'en_US',
@@ -36,7 +37,7 @@ export const metadata = {
 
   twitter: {
     card: 'summary_large_image',
-    title: 'RAILSPK | Digital Legacy Project',
+    title: 'THE RAILSPK | Digital Legacy Project',
     description: 'Explore the digital legacy of Pakistan Railways.',
     images: ['/og-image.webp'],
   },
@@ -73,10 +74,12 @@ export default function RootLayout({ children }) {
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
       </head>
 
-      {/* Added suppressHydrationWarning to body to prevent dark mode class mismatch errors */}
       <body className="bg-white text-gray-900 dark:bg-rail-dark dark:text-gray-200 transition-colors duration-500 antialiased overflow-x-hidden" suppressHydrationWarning>
         
-        {/* Google AdSense - Converted to Next.js Script with afterInteractive */}
+        {/* Visit Tracker Component: Handles Firebase Tracking on Client Side */}
+        <VisitTracker />
+
+        {/* Google AdSense */}
         <Script 
           id="google-adsense"
           src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8566339481152239"
