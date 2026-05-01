@@ -111,7 +111,7 @@ export default function PostViewer() {
 
                     {/* Post Meta (Optional footer for detailed view) */}
                     <div className="pt-10 border-t border-black/5 dark:border-white/5 flex items-center justify-between">
-                        <p className="text-[9px] font-black uppercase tracking-[0.3em] text-[#74777f]">
+                        <p className="text-[9px] font-black uppercase tracking-[0.3em] dark:text-[#a9abb1]">
                             Digital Record ID: <span className="text-rail-accent">{post.id.slice(0,8)}</span>
                         </p>
                         <button 

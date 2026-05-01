@@ -18,7 +18,7 @@ export default function HeritagePage() {
             <div className="flex-1 text-center md:text-left space-y-6 px-4">
               <span className="text-rail-accent font-black text-2xl italic"># {s.year}</span>
               <h2 className="text-4xl md:text-6xl font-black uppercase italic tracking-tight">{s.title}</h2>
-              <p className="text-[#74777f] font-medium leading-relaxed italic">{s.desc}</p>
+              <p className="dark:text-[#a9abb1] font-medium leading-relaxed italic">{s.desc}</p>
               <button className="px-10 py-4 bg-rail-accent text-white rounded-full font-black uppercase text-[10px] shadow-lg active:scale-95 transition-all">Read Story</button>
             </div>
           </div>

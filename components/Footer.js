@@ -2,11 +2,11 @@ import Link from 'next/link';
 
 export default function Footer() {
   const socialLinks = [
-    { icon: 'fa-facebook', href: 'https://www.facebook.com/railoverspk/', color: 'hover:text-blue-600' },
-    { icon: 'fa-youtube', href: 'https://youtube.com/@railoverspkofficial', color: 'hover:text-red-600' },
-    { icon: 'fa-instagram', href: 'https://instagram.com/realinventivecadet', color: 'hover:text-pink-500' },
-    { icon: 'fa-tiktok', href: 'https://tiktok.com/@railoverspk', color: 'hover:text-black dark:hover:text-white' },
-    { icon: 'fa-whatsapp', href: 'https://whatsapp.com/channel/0029VbBHeff8PgsJZYRHww3O', color: 'hover:text-green-500' }
+    { name: 'Facebook', icon: 'fa-facebook', href: 'https://www.facebook.com/railoverspk/', color: 'hover:text-blue-600' },
+    { name: 'YouTube', icon: 'fa-youtube', href: 'https://youtube.com/@railoverspkofficial', color: 'hover:text-red-600' },
+    { name: 'Instagram', icon: 'fa-instagram', href: 'https://instagram.com/realinventivecadet', color: 'hover:text-pink-500' },
+    { name: 'TikTok', icon: 'fa-tiktok', href: 'https://tiktok.com/@railoverspk', color: 'hover:text-black dark:hover:text-white' },
+    { name: 'WhatsApp', icon: 'fa-whatsapp', href: 'https://whatsapp.com/channel/0029VbBHeff8PgsJZYRHww3O', color: 'hover:text-green-500' }
   ];
 
   const helpLinks = [
@@ -73,6 +73,7 @@ export default function Footer() {
             <div className="w-full h-64 rounded-[2rem] overflow-hidden border-4 border-white dark:border-[#2e2f33] shadow-2xl grayscale-[20%] hover:grayscale-0 transition-all duration-700">
               <iframe 
                 src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3620.3541433285!2d67.03157771141753!3d24.85172407784351!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3eb33e6ff702581f%3A0x6b245a49479e0b1d!2sKarachi%20Cantt.%20Station!5e0!3m2!1sen!2spk!4v1714200000000!5m2!1sen!2spk" 
+                title="Google Maps: Karachi Cantonment Railway Station" // <-- Fixes Accessibility
                 width="100%" 
                 height="100%" 
                 style={{ border: 0 }} 
@@ -80,7 +81,7 @@ export default function Footer() {
                 loading="lazy" 
               ></iframe>
             </div>
-            <p className="text-[9px] font-bold text-[#74777f] uppercase tracking-widest text-center italic">
+            <p className="text-[9px] font-bold dark:text-[#a9abb1] uppercase tracking-widest text-center italic">
               Platform Layout • Live GPS Feed • 24/7 Arrivals
             </p>
           </div>
@@ -94,9 +95,10 @@ export default function Footer() {
               href={social.href} 
               target="_blank" 
               rel="noopener noreferrer"
+              aria-label={`Follow us on ${social.name}`} // <-- Fixes Discernible Name[cite: 1, 2]
               className={`w-14 h-14 flex items-center justify-center bg-white dark:bg-[#2e2f33] rounded-full text-2xl text-[#44474e] dark:text-[#e3e2e6] shadow-sm transition-all hover:-translate-y-2 hover:shadow-lg ${social.color}`}
             >
-              <i className={`fab ${social.icon}`}></i>
+              <i className={`fab ${social.icon}`} aria-hidden="true"></i>
             </a>
           ))}
         </div>
@@ -104,7 +106,7 @@ export default function Footer() {
         {/* Copyright & Legal Pills */}
         <div className="flex flex-col items-center gap-8">
           <div className="text-center">
-            <p className="text-[#74777f] text-[10px] tracking-[0.5em] font-black uppercase italic">
+            <p className="dark:text-[#a9abb1] text-[10px] tracking-[0.5em] font-black uppercase italic">
               © 2026 RAILSPK | Digital Legacy Project
             </p>
           </div>
@@ -112,12 +114,14 @@ export default function Footer() {
           <div className="flex justify-center gap-3">
             <Link 
               href="/privacy" 
+              aria-label="View our Privacy Policy"
               className="px-6 py-2 bg-white/50 dark:bg-[#2e2f33]/50 hover:bg-rail-accent hover:text-white rounded-full text-[10px] font-bold uppercase tracking-widest transition-all"
             >
               Privacy
             </Link>
             <Link 
               href="/terms" 
+              aria-label="View our Terms of Service"
               className="px-6 py-2 bg-white/50 dark:bg-[#2e2f33]/50 hover:bg-rail-accent hover:text-white rounded-full text-[10px] font-bold uppercase tracking-widest transition-all"
             >
               Terms

@@ -1,6 +1,4 @@
 User-agent: *
 Allow: /
-Disallow: /_next/
 
-# Sitemap ka link dena lazmi hai taake Google ko rasta milay
 Sitemap: https://therails.pk/sitemap.xml

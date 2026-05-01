@@ -167,11 +167,11 @@ export default function AdminDashboard() {
                 <div className="flex flex-col md:flex-row justify-between items-center bg-[#f2f0f4] dark:bg-[#2e2f33] p-8 rounded-[3rem] mb-12 shadow-sm gap-6 border border-black/5 dark:border-white/5">
                     <div className="space-y-1">
                         <h1 className="text-4xl md:text-6xl font-black uppercase italic tracking-tighter">COMMAND <span className="text-rail-accent">CENTER</span></h1>
-                        <p className="text-[10px] font-bold uppercase tracking-[0.5em] text-[#74777f]">Operations v4.5 Active</p>
+                        <p className="text-[10px] font-bold uppercase tracking-[0.5em] dark:text-[#a9abb1]">Operations v4.5 Active</p>
                     </div>
                     <div className="flex flex-wrap justify-center items-center gap-3 bg-white/40 dark:bg-black/20 p-2 rounded-full backdrop-blur-md">
                         {['updates', 'bookings', 'trains', 'analytics'].map((tab) => (
-                            <button key={tab} onClick={() => setActiveTab(tab)} className={`px-8 py-3 rounded-full text-[10px] font-black uppercase tracking-widest transition-all duration-500 ${activeTab === tab ? 'bg-rail-accent text-white shadow-xl scale-105' : 'text-[#74777f] hover:text-rail-accent'}`}>
+                            <button key={tab} onClick={() => setActiveTab(tab)} className={`px-8 py-3 rounded-full text-[10px] font-black uppercase tracking-widest transition-all duration-500 ${activeTab === tab ? 'bg-rail-accent text-white shadow-xl scale-105' : 'dark:text-[#a9abb1] hover:text-rail-accent'}`}>
                                 {tab}
                             </button>
                         ))}
@@ -219,7 +219,7 @@ export default function AdminDashboard() {
 
                                         {existingImages.length > 0 && (
                                             <div className="space-y-2">
-                                                <p className="text-[9px] font-black uppercase text-[#74777f] px-2">Currently on Cloud:</p>
+                                                <p className="text-[9px] font-black uppercase dark:text-[#a9abb1] px-2">Currently on Cloud:</p>
                                                 <div className="grid grid-cols-3 gap-4 p-4 bg-rail-accent/5 rounded-[2rem]">
                                                     {existingImages.map((url, i) => (
                                                         <div key={i} className="relative aspect-square rounded-2xl overflow-hidden group">
@@ -252,7 +252,7 @@ export default function AdminDashboard() {
                                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                                     {train.fares.map((fare, fIdx) => (
                                                         <div key={fIdx} className="p-4 bg-[#f2f0f4] dark:bg-black/20 rounded-[1.5rem]">
-                                                            <label className="text-[9px] font-black uppercase text-[#74777f]">{fare.class}</label>
+                                                            <label className="text-[9px] font-black uppercase dark:text-[#a9abb1]">{fare.class}</label>
                                                             <input type="text" defaultValue={fare.price.replace(/[^\d]/g, '')} onBlur={(e) => handleUpdateFare(train.id, fIdx, e.target.value)} className="bg-white dark:bg-[#1b1b1f] w-full px-4 py-2 rounded-xl text-sm font-black outline-none mt-2 shadow-inner" />
                                                         </div>
                                                     ))}
@@ -268,7 +268,7 @@ export default function AdminDashboard() {
                                         <div key={b.id} className="bg-white dark:bg-[#1b1b1f] p-6 rounded-[2.5rem] flex justify-between items-center border border-black/5 group">
                                             <div>
                                                 <h4 className="font-black uppercase text-sm italic">{b.fullName}</h4>
-                                                <p className="text-[9px] font-bold text-[#74777f] uppercase">{b.trainName} • {b.class}</p>
+                                                <p className="text-[9px] font-bold dark:text-[#a9abb1] uppercase">{b.trainName} • {b.class}</p>
                                             </div>
                                             <div className="flex gap-2">
                                                 <button onClick={() => updateBookingStatus(b.id, 'confirmed')} className={`p-2 rounded-full ${b.status === 'confirmed' ? 'bg-green-500 text-white' : 'bg-green-500/10 text-green-500'}`}><span className="material-symbols-rounded">check</span></button>
@@ -286,7 +286,7 @@ export default function AdminDashboard() {
                                             { label: 'Unique', val: new Set(visits.map(v => v.ip)).size },
                                             { label: 'Direct', val: visits.filter(v => v.referrer === 'direct').length }
                                         ].map((stat, i) => (
-                                            <div key={i} className="bg-white dark:bg-[#1b1b1f] p-8 rounded-[2.5rem] shadow-sm"><p className="text-[9px] font-black uppercase text-[#74777f] mb-1">{stat.label}</p><p className="text-4xl font-black italic">{stat.val}</p></div>
+                                            <div key={i} className="bg-white dark:bg-[#1b1b1f] p-8 rounded-[2.5rem] shadow-sm"><p className="text-[9px] font-black uppercase dark:text-[#a9abb1] mb-1">{stat.label}</p><p className="text-4xl font-black italic">{stat.val}</p></div>
                                         ))}
                                     </div>
                                     <div className="bg-white dark:bg-[#1b1b1f] rounded-[2.5rem] overflow-hidden p-2">
@@ -302,14 +302,14 @@ export default function AdminDashboard() {
                                     </div>
                                 </div>
                             ) : (
-                                <div className="text-center py-20 text-[#74777f] uppercase font-black text-xs tracking-widest italic opacity-50 italic animate-pulse">Monitoring Active...</div>
+                                <div className="text-center py-20 dark:text-[#a9abb1] uppercase font-black text-xs tracking-widest italic opacity-50 italic animate-pulse">Monitoring Active...</div>
                             )}
                         </div>
                     </div>
 
                     <div className="space-y-6">
                         <div className="bg-[#f2f0f4] dark:bg-[#2e2f33] p-8 rounded-[3rem] border border-black/5">
-                            <h3 className="text-[10px] font-black uppercase tracking-widest text-[#74777f] mb-6">Operations Hub</h3>
+                            <h3 className="text-[10px] font-black uppercase tracking-widest dark:text-[#a9abb1] mb-6">Operations Hub</h3>
                             <div className="space-y-4 text-xs font-black">
                                 <div className="flex justify-between items-center bg-white dark:bg-black/20 p-4 rounded-2xl"><span className="text-[9px] font-bold uppercase text-gray-500">Live Trains</span><span className="text-sm font-black text-rail-accent">{trains.length}</span></div>
                                 <div className="flex justify-between items-center bg-white dark:bg-black/20 p-4 rounded-2xl"><span className="text-[9px] font-bold uppercase text-gray-500">Pending</span><span className="text-sm font-black text-orange-500">{bookings.filter(b => b.status === 'pending').length}</span></div>

@@ -48,7 +48,7 @@ export default function FareCalculator() {
         <h1 className="text-4xl md:text-7xl font-black italic uppercase tracking-tighter">
           Fare <span className="text-rail-accent">Calculator</span>
         </h1>
-        <p className="text-[#74777f] font-bold uppercase tracking-widest text-[10px] mt-4 italic">
+        <p className="dark:text-[#a9abb1] font-bold uppercase tracking-widest text-[10px] mt-4 italic">
           Estimate your journey costs across Pakistan
         </p>
       </div>
@@ -58,7 +58,7 @@ export default function FareCalculator() {
         <div className="lg:col-span-2 bg-[#f2f0f4] dark:bg-[#1b1b1f] p-8 md:p-12 rounded-[3.5rem] shadow-sm space-y-8">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="space-y-2">
-              <label className="text-[10px] font-black uppercase tracking-widest ml-4 text-[#74777f]">From Station</label>
+              <label className="text-[10px] font-black uppercase tracking-widest ml-4 dark:text-[#a9abb1]">From Station</label>
               <select 
                 value={from} 
                 onChange={(e) => setFrom(e.target.value)}
@@ -69,7 +69,7 @@ export default function FareCalculator() {
               </select>
             </div>
             <div className="space-y-2">
-              <label className="text-[10px] font-black uppercase tracking-widest ml-4 text-[#74777f]">To Destination</label>
+              <label className="text-[10px] font-black uppercase tracking-widest ml-4 dark:text-[#a9abb1]">To Destination</label>
               <select 
                 value={to} 
                 onChange={(e) => setTo(e.target.value)}
@@ -83,13 +83,13 @@ export default function FareCalculator() {
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="space-y-2">
-              <label className="text-[10px] font-black uppercase tracking-widest ml-4 text-[#74777f]">Class Type</label>
+              <label className="text-[10px] font-black uppercase tracking-widest ml-4 dark:text-[#a9abb1]">Class Type</label>
               <div className="flex flex-wrap gap-2">
                 {Object.keys(classMultipliers).map(c => (
                   <button 
                     key={c} 
                     onClick={() => setTrainClass(c)}
-                    className={`px-6 py-3 rounded-full text-[10px] font-black uppercase tracking-widest transition-all ${trainClass === c ? 'bg-rail-accent text-white shadow-lg' : 'bg-white dark:bg-[#2e2f33] text-[#74777f]'}`}
+                    className={`px-6 py-3 rounded-full text-[10px] font-black uppercase tracking-widest transition-all ${trainClass === c ? 'bg-rail-accent text-white shadow-lg' : 'bg-white dark:bg-[#2e2f33] dark:text-[#a9abb1]'}`}
                   >
                     {c}
                   </button>
@@ -97,13 +97,13 @@ export default function FareCalculator() {
               </div>
             </div>
             <div className="space-y-2">
-              <label className="text-[10px] font-black uppercase tracking-widest ml-4 text-[#74777f]">Passenger Type</label>
+              <label className="text-[10px] font-black uppercase tracking-widest ml-4 dark:text-[#a9abb1]">Passenger Type</label>
               <div className="flex gap-2">
                 {["Adult", "Child"].map(p => (
                   <button 
                     key={p} 
                     onClick={() => setPassenger(p)}
-                    className={`flex-1 py-3 rounded-full text-[10px] font-black uppercase tracking-widest transition-all ${passenger === p ? 'bg-rail-accent text-white shadow-lg' : 'bg-white dark:bg-[#2e2f33] text-[#74777f]'}`}
+                    className={`flex-1 py-3 rounded-full text-[10px] font-black uppercase tracking-widest transition-all ${passenger === p ? 'bg-rail-accent text-white shadow-lg' : 'bg-white dark:bg-[#2e2f33] dark:text-[#a9abb1]'}`}
                   >
                     {p}
                   </button>
@@ -156,21 +156,21 @@ export default function FareCalculator() {
           </h4>
           <ul className="space-y-4">
             <li className="flex justify-between text-xs font-bold uppercase border-b border-gray-300 dark:border-white/5 pb-2">
-              <span className="text-[#74777f]">AC Sleeper</span>
+              <span className="dark:text-[#a9abb1]">AC Sleeper</span>
               <span className="text-rail-accent italic">Cabin + Bedding</span>
             </li>
             <li className="flex justify-between text-xs font-bold uppercase border-b border-gray-300 dark:border-white/5 pb-2">
-              <span className="text-[#74777f]">AC Business</span>
+              <span className="dark:text-[#a9abb1]">AC Business</span>
               <span className="text-rail-accent italic">Semi-Private + AC</span>
             </li>
             <li className="flex justify-between text-xs font-bold uppercase pb-2">
-              <span className="text-[#74777f]">Economy</span>
+              <span className="dark:text-[#a9abb1]">Economy</span>
               <span className="text-rail-accent italic">Standard Seating</span>
             </li>
           </ul>
         </div>
         <div className="flex flex-col justify-center p-4">
-            <p className="text-[10px] text-[#74777f] font-bold uppercase tracking-[0.2em] italic leading-relaxed">
+            <p className="text-[10px] dark:text-[#a9abb1] font-bold uppercase tracking-[0.2em] italic leading-relaxed">
               Note: The fares shown are estimates based on standard route pricing. Actual fares may vary depending on the specific train (Express vs. Passenger) and seasonal adjustments by Pakistan Railways.
             </p>
         </div>

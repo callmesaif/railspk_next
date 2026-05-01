@@ -5,12 +5,12 @@ import { trainsData } from '@/lib/trains';
 export default function sitemap() {
   const baseUrl = 'https://therails.pk';
 
-  // 1. Tamaam Static Routes (Jo humne files mein dekhe)
+  // 1. Tamaam Static Routes
   const staticRoutes = [
     '',
     '/reviews',
     '/community',
-    '/community/view', // Post Viewer Page
+    '/community/view',
     '/support',
     '/fares',
     '/schedule',
@@ -28,7 +28,7 @@ export default function sitemap() {
     priority: route === '' ? 1.0 : 0.8,
   }));
 
-  // 2. Dynamic Review Routes (Har train ke liye alag entry)
+  // 2. Dynamic Review Routes (Har train ke liye entries)
   const reviewRoutes = trainsData.map((train) => ({
     url: `${baseUrl}/reviews/${train.id}`,
     lastModified: new Date().toISOString().split('T')[0],
@@ -36,6 +36,6 @@ export default function sitemap() {
     priority: 0.6,
   }));
 
-  // Dono ko combine karke return karna
+  // Combine static and dynamic routes
   return [...staticRoutes, ...reviewRoutes];
 }

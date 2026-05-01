@@ -46,7 +46,7 @@ export default function CommentSection({ docId, type }) {
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-4 bg-[#f2f0f4] dark:bg-[#2e2f33] p-6 rounded-[2rem]">
                     {Object.keys(ratings).map((cat) => (
                         <div key={cat} className="text-center">
-                            <p className="text-[9px] font-bold uppercase mb-2 text-[#74777f]">{cat}</p>
+                            <p className="text-[9px] font-bold uppercase mb-2 dark:text-[#a9abb1]">{cat}</p>
                             <select 
                                 value={ratings[cat]} 
                                 onChange={(e) => setRatings({...ratings, [cat]: parseInt(e.target.value)})}
@@ -80,7 +80,7 @@ export default function CommentSection({ docId, type }) {
                         <div className="flex justify-between items-start mb-2">
                             <div className="flex items-center gap-2">
                                 <span className="material-symbols-rounded text-rail-accent">account_circle</span>
-                                <p className="text-[10px] text-[#74777f] font-bold uppercase">{c.user.split('@')[0]}</p>
+                                <p className="text-[10px] dark:text-[#a9abb1] font-bold uppercase">{c.user.split('@')[0]}</p>
                             </div>
                             {/* Display user's specific rating */}
                             <div className="flex gap-2">

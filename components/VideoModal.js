@@ -16,13 +16,14 @@ export default function VideoModal({ videoId, onClose }) {
         
         {/* YouTube Embed (Autoplay Enabled) */}
         <div className="w-full h-full">
-          <iframe 
-            className="w-full h-full" 
-            src={`https://www.youtube.com/embed/${videoId}?autoplay=1`} 
-            frameBorder="0" 
-            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
-            allowFullScreen
-          ></iframe>
+          // VideoModal.js ya jahan bhi YouTube embed hai
+        <iframe
+          src={`https://www.youtube.com/embed/${videoId}`}
+          title="Pakistan Railways Cinematic Vlog" // <-- Yeh lazmi add karein
+          frameBorder="0"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+          allowFullScreen>
+          </iframe>
         </div>
       </div>
     </div>

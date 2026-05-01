@@ -29,12 +29,12 @@ export default function AdminLogin() {
                         <span className="material-symbols-rounded text-3xl text-rail-accent">admin_panel_settings</span>
                     </div>
                     <h2 className="text-3xl font-black italic uppercase tracking-tighter text-foreground">Admin <span className="text-rail-accent">Portal</span></h2>
-                    <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-[#74777f] mt-2">Authorized Personnel Only</p>
+                    <p className="text-[10px] font-bold uppercase tracking-[0.2em] dark:text-[#a9abb1] mt-2">Authorized Personnel Only</p>
                 </div>
 
                 <form onSubmit={handleLogin} className="space-y-6">
                     <div className="space-y-2">
-                        <label className="text-[10px] font-black uppercase tracking-widest text-[#74777f] ml-4">Email Address</label>
+                        <label className="text-[10px] font-black uppercase tracking-widest dark:text-[#a9abb1] ml-4">Email Address</label>
                         <div className="relative">
                             <span className="material-symbols-rounded absolute left-5 top-1/2 -translate-y-1/2 text-gray-400 text-lg">mail</span>
                             <input 
@@ -48,7 +48,7 @@ export default function AdminLogin() {
                     </div>
 
                     <div className="space-y-2">
-                        <label className="text-[10px] font-black uppercase tracking-widest text-[#74777f] ml-4">Password</label>
+                        <label className="text-[10px] font-black uppercase tracking-widest dark:text-[#a9abb1] ml-4">Password</label>
                         <div className="relative">
                             <span className="material-symbols-rounded absolute left-5 top-1/2 -translate-y-1/2 text-gray-400 text-lg">lock</span>
                             <input 
@@ -73,7 +73,7 @@ export default function AdminLogin() {
                 </form>
 
                 <div className="mt-8 text-center">
-                    <Link href="/" className="text-[10px] font-bold uppercase tracking-widest text-[#74777f] hover:text-rail-accent transition">
+                    <Link href="/" className="text-[10px] font-bold uppercase tracking-widest dark:text-[#a9abb1] hover:text-rail-accent transition">
                         ← Return to Terminal
                     </Link>
                 </div>

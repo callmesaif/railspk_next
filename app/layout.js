@@ -14,7 +14,7 @@ export const metadata = {
   keywords: [
     "Pakistan Railways", "Train Reviews", "Railway Vlogs", "Railspk", 
     "Train Fares", "Railway Community", "Shalimar Express Reviews", 
-    "Green line Reviews", "Karakoram Express Reviews", "Pak Business Express Reviews"
+    "Green line Reviews", "Karakoram Express Reviews", "Pak Business Express Reviews", "Pakistan Railways Fares", "Railway Travel Vlogs", "Trainspotting Pakistan", "Railway Heritage", "Train Enthusiasts Pakistan", "Railway Journey Vlogs", "Pakistan Train Reviews", "Railway Travel Tips", "Train Travel Pakistan", "Railway Fan Community", "Pakistan Railways Updates", "Train Travel Experiences", "Railway Documentary Pakistan", "Railoverspk", "Railway Nostalgia Pakistan", "Train Travel Guides Pakistan", "Railway Preservation Pakistan", "Trainspotting Karachi", "Trainspotting Lahore", "Trainspotting Islamabad", "Trainspotting Peshawar", "Trainspotting Quetta"
   ],
 
   // --- OPEN GRAPH (Facebook, WhatsApp, LinkedIn) ---
@@ -80,12 +80,11 @@ export default function RootLayout({ children }) {
         <VisitTracker />
 
         {/* Google AdSense */}
-        <Script 
-          id="google-adsense"
+        <script 
+          async 
           src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8566339481152239"
-          strategy="afterInteractive"
-          crossOrigin="anonymous"
-        />
+          crossOrigin="anonymous">         
+        </script>
 
         {/* Google Analytics */}
         <Script

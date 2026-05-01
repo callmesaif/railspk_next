@@ -96,7 +96,7 @@ export default function BookingModal({ isOpen, onClose, selectedTrainId }) {
                 
                 <div className="mt-8 mb-8">
                     <h3 className="text-2xl font-black uppercase italic text-rail-accent leading-none mb-2">Request Ticket</h3>
-                    <p className="text-[10px] font-bold uppercase tracking-[0.3em] text-[#74777f]">Authorized Ticketing Portal</p>
+                    <p className="text-[10px] font-bold uppercase tracking-[0.3em] dark:text-[#a9abb1]">Authorized Ticketing Portal</p>
                 </div>
 
                 <div className="bg-rail-accent/10 border border-rail-accent/20 p-4 rounded-2xl mb-8 flex items-center gap-4 animate-pulse">

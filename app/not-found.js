@@ -17,7 +17,7 @@ export default function NotFound() {
         </h1>
 
         {/* 3. Description */}
-        <p className="text-base md:text-2xl text-[#74777f] dark:text-[#c4c6cf] italic font-medium mb-16 max-w-lg mx-auto leading-relaxed">
+        <p className="text-base md:text-2xl dark:text-[#a9abb1] dark:text-[#c4c6cf] italic font-medium mb-16 max-w-lg mx-auto leading-relaxed">
           The requested station or page has been derailed. It might have been moved or the track is under maintenance.
         </p>
 

@@ -11,7 +11,7 @@ export default function RefundPage() {
         <h1 className="text-5xl md:text-8xl font-black italic uppercase tracking-tighter">
           Refund <span className="text-rail-accent">Policy</span>
         </h1>
-        <p className="text-[#74777f] font-bold uppercase tracking-widest text-[10px] mt-4 italic">
+        <p className="dark:text-[#a9abb1] font-bold uppercase tracking-widest text-[10px] mt-4 italic">
           Official Cancellation & Deduction Guide
         </p>
       </div>
@@ -41,7 +41,7 @@ export default function RefundPage() {
                     <div key={i} className="bg-white dark:bg-[#2e2f33] p-8 rounded-[2rem] shadow-sm border border-transparent hover:border-rail-accent/20 transition-all flex justify-between items-center group">
                         <div className="space-y-1">
                             <h4 className="text-sm font-black uppercase tracking-tight group-hover:text-rail-accent transition-colors">{rule.time}</h4>
-                            <p className="text-[10px] text-[#74777f] italic font-medium">{rule.detail}</p>
+                            <p className="text-[10px] dark:text-[#a9abb1] italic font-medium">{rule.detail}</p>
                         </div>
                         <div className="bg-rail-accent/10 text-rail-accent px-6 py-2 rounded-full font-black italic text-xl">
                             {rule.deduction}

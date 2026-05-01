@@ -80,7 +80,7 @@ export default function TrainDetailClient({ train }) {
                     <div className="bg-[#f2f0f4] dark:bg-[#2e2f33] border border-transparent p-8 md:p-12 rounded-[3rem] grid grid-cols-2 md:grid-cols-4 gap-8 shadow-sm">
                         {Object.entries(dynamicStats).map(([key, val]) => (
                             <div key={key} className="flex flex-col items-center text-center p-4 bg-white dark:bg-[#1b1b1f] rounded-[2rem] shadow-sm">
-                                <p className="text-[9px] font-bold uppercase text-[#74777f] mb-3 tracking-[0.2em]">{key}</p>
+                                <p className="text-[9px] font-bold uppercase dark:text-[#a9abb1] mb-3 tracking-[0.2em]">{key}</p>
                                 <p className="text-4xl font-black italic text-rail-accent leading-none">
                                     {val}<span className="text-xs opacity-40 font-normal">/5</span>
                                 </p>

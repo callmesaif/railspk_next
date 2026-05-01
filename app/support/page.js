@@ -21,7 +21,7 @@ export default function SupportPage() {
           </h2>
           <div className="inline-flex items-center gap-2 mt-6 px-4 py-1.5 bg-[#f2f0f4] dark:bg-[#2e2f33] rounded-full">
             <span className="material-symbols-rounded text-sm text-rail-accent">contact_support</span>
-            <span className="text-[#74777f] uppercase tracking-[0.2em] text-[10px] font-bold">24/7 Digital Concierge</span>
+            <span className="dark:text-[#a9abb1] uppercase tracking-[0.2em] text-[10px] font-bold">24/7 Digital Concierge</span>
           </div>
         </div>
 
@@ -70,7 +70,7 @@ export default function SupportPage() {
           <div className="w-16 h-16 bg-white dark:bg-[#2e2f33] rounded-full flex items-center justify-center mx-auto mb-6 shadow-sm">
              <span className="material-symbols-rounded text-3xl text-rail-accent">chat</span>
           </div>
-          <p className="text-[#74777f] text-[10px] font-bold uppercase tracking-[0.3em] mb-8">
+          <p className="dark:text-[#a9abb1] text-[10px] font-bold uppercase tracking-[0.3em] mb-8">
             Still need assistance from our team?
           </p>
           <a 
