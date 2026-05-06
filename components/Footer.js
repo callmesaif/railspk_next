@@ -13,9 +13,9 @@ export default function Footer() {
     {
       title: "Travel Tools",
       links: [
-        { name: "Live Tracking", href: "https://traintracking.pk" },
         { name: "Train Schedule", href: "/schedule" },
-        { name: "Fare Calculator", href: "/fares" }
+        { name: "Fare Calculator", href: "/fares" },
+        { name: "Route Planner", href: "/planner" }
       ]
     },
     {

@@ -132,13 +132,13 @@ export default function HomePage() {
           </div>
 
           <nav className="flex flex-wrap justify-center gap-3 mt-8 animate-fade-in">
-            <Link href="/community" aria-label={`View Community Update: ${latestUpdateTitle}`} className="flex items-center gap-2 px-6 py-2.5 bg-white/10 backdrop-blur-md border border-white/20 rounded-full hover:bg-rail-accent/20 transition-all group">
-              <span className="w-2 h-2 rounded-full bg-rail-accent animate-pulse" aria-hidden="true"></span>
-              <span className="text-[10px] font-black uppercase tracking-widest text-white/90 truncate max-w-[200px]">
-                New Update: {latestUpdateTitle}
-              </span>
-              <span className="material-symbols-rounded text-sm text-rail-accent group-hover:translate-x-1 transition-transform" aria-hidden="true">arrow_right_alt</span>
-            </Link>
+          <Link href="/planner" aria-label="Explore Journey Planner: Discover Destinations" className="flex items-center gap-2 px-6 py-2.5 bg-white/10 backdrop-blur-md border border-white/20 rounded-full hover:bg-rail-accent/20 transition-all group">
+    <span className="w-2 h-2 rounded-full bg-rail-accent animate-pulse" aria-hidden="true"></span>
+    <span className="text-[10px] font-black uppercase tracking-widest text-white/90">
+      Explore: Journey Planner
+    </span>
+    <span className="material-symbols-rounded text-sm text-rail-accent group-hover:translate-x-1 transition-transform" aria-hidden="true">explore</span>
+  </Link>
 
             <Link href={`/reviews/${latestReview.id}`} aria-label={`View Latest Review: ${latestReview.name}`} className="flex items-center gap-2 px-6 py-2.5 bg-white/10 backdrop-blur-md border border-white/20 rounded-full hover:bg-green-500/20 transition-all group border-green-500/30">
               <span className="w-2 h-2 rounded-full bg-green-500 animate-pulse" aria-hidden="true"></span>

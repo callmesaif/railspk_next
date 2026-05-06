@@ -1,180 +1,197 @@
 "use client";
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 
 export default function FareCalculator() {
-  const [from, setFrom] = useState("");
-  const [to, setTo] = useState("");
+  const [from, setFrom] = useState("Karachi");
+  const [to, setTo] = useState("Lahore");
+  const [selectedTrain, setSelectedTrain] = useState("Khyber Mail");
   const [trainClass, setTrainClass] = useState("Economy");
   const [passenger, setPassenger] = useState("Adult");
 
-  // Sample Data: Isay aap mazeed barha sakte hain
-  const baseFares = {
-    "Karachi-Lahore": 1800,
-    "Karachi-Rawalpindi": 2200,
-    "Karachi-Multan": 1400,
-    "Lahore-Rawalpindi": 800,
-    "Lahore-Multan": 700,
-    "Multan-Rawalpindi": 1100,
+  // Official Route Data
+  const routeData = {
+    "Karachi-Lahore": { base: 3150, dist: 1210 },
+    "Karachi-Rawalpindi": { base: 3700, dist: 1500 },
+    "Karachi-Multan": { base: 2350, dist: 840 },
+    "Lahore-Rawalpindi": { base: 1150, dist: 290 },
+    "Lahore-Multan": { base: 1200, dist: 340 },
+    "Multan-Rawalpindi": { base: 1900, dist: 560 },
   };
 
-  const classMultipliers = {
-    "Economy": 1,
-    "AC Standard": 2.5,
-    "AC Business": 3.8,
-    "AC Sleeper": 5.2,
+  const stations = ["Karachi", "Lahore", "Rawalpindi", "Multan", "Hyderabad", "Peshawar", "Quetta", "Sukkur", "Rohri"];
+
+  const trains = {
+    standard: ["Khyber Mail", "Millat Express", "Bahauddin Zakria", "Sukkur Express", "Allama Iqbal Express", "Hazara Express", "Pakistan Express", "Rehman Baba", "Shalimar Express", "Awam Express", "Bolan Mail", "Khushal Khan Khattak"],
+    premium: ["Karachi Express", "Pak Business Express", "Karakoram Express", "Jaffar Express", "Tezgam"],
+    luxury: ["Green Line"],
+    special: ["Fareed Express"]
   };
 
-  const stations = ["Karachi", "Lahore", "Rawalpindi", "Multan", "Hyderabad", "Peshawar", "Quetta"];
+  const allTrainsList = [...trains.standard, ...trains.premium, ...trains.luxury, ...trains.special];
+
+  const getTrainMultiplier = (trainName) => {
+    if (trains.luxury.includes(trainName)) return 1.45; //[cite: 1]
+    if (trains.premium.includes(trainName)) return 1.20; //[cite: 1]
+    if (trains.special.includes(trainName)) return 0.85; //[cite: 1]
+    return 1.0; 
+  };
+
+  // STRICT ROUNDING: No decimals allowed
+  const applyRounding = (fare) => {
+    const rawFare = Math.round(fare); // Kill decimals first
+    const remainder = rawFare % 100;
+
+    // Official Instruction 5 logic[cite: 1]
+    if (remainder <= 20) return Math.floor(rawFare / 100) * 100;
+    if (remainder >= 30 && remainder <= 70) return Math.floor(rawFare / 100) * 100 + 50;
+    if (remainder >= 80) return Math.ceil(rawFare / 100) * 100;
+    
+    // Catch-all for intermediate points (e.g. 25, 75)
+    return Math.round(rawFare / 50) * 50; 
+  };
 
   const calculateFare = () => {
-    const route = `${from}-${to}`;
-    const reverseRoute = `${to}-${from}`;
-    const price = baseFares[route] || baseFares[reverseRoute];
+    const route = routeData[`${from}-${to}`] || routeData[`${to}-${from}`];
+    if (!route || from === to) return null;
 
-    if (!price || from === to) return null;
+    let base = route.base;
+    base = base * getTrainMultiplier(selectedTrain); //[cite: 1]
 
-    let finalFare = price * classMultipliers[trainClass];
-    if (passenger === "Child") finalFare = finalFare * 0.5; // 50% discount for children
+    const classMap = {
+      "Economy": 1,
+      "AC Standard": 2.0,
+      "AC Business": 2.85,
+      "AC Sleeper": 3.7,
+      "AC Parlor": 2.85
+    }; //[cite: 1]
+    
+    let fare = base * classMap[trainClass]; //[cite: 1]
 
-    return Math.round(finalFare);
+    if (trainClass === "Economy") {
+      fare += route.dist <= 500 ? 50 : 100; //[cite: 1]
+    }
+
+    // 2026 War Hike Logic
+    const hike = trainClass === "Economy" ? 1.10 : 1.15;
+    fare = fare * hike;
+
+    if (passenger === "Child") fare = fare * 0.5; //[cite: 1]
+
+    return applyRounding(fare);
   };
 
   const estimatedFare = calculateFare();
 
   return (
-    <main className="pt-32 pb-20 px-6 max-w-5xl mx-auto">
-      <div className="text-center mb-16">
-        <h1 className="text-4xl md:text-7xl font-black italic uppercase tracking-tighter">
+    <main className="pt-32 pb-20 px-6 max-w-6xl mx-auto animate-m3">
+      <header className="text-center mb-16">
+        <h1 className="text-5xl md:text-8xl font-black italic uppercase tracking-tighter leading-none">
           Fare <span className="text-rail-accent">Calculator</span>
         </h1>
-        <p className="dark:text-[#a9abb1] font-bold uppercase tracking-widest text-[10px] mt-4 italic">
-          Estimate your journey costs across Pakistan
+        <p className="text-muted text-[10px] font-black uppercase tracking-[0.4em] mt-6 italic">
+          Official Round-Figure Estimation (2026 Crisis Adjusted)
         </p>
-      </div>
+      </header>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-10">
-        {/* Input Card */}
-        <div className="lg:col-span-2 bg-[#f2f0f4] dark:bg-[#1b1b1f] p-8 md:p-12 rounded-[3.5rem] shadow-sm space-y-8">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div className="space-y-2">
-              <label className="text-[10px] font-black uppercase tracking-widest ml-4 dark:text-[#a9abb1]">From Station</label>
-              <select 
-                value={from} 
-                onChange={(e) => setFrom(e.target.value)}
-                className="w-full bg-white dark:bg-[#2e2f33] p-5 rounded-3xl outline-none font-bold text-sm appearance-none border border-transparent focus:border-rail-accent/30"
-              >
-                <option value="">Select Origin</option>
+      <div className="grid grid-cols-1 lg:grid-cols-5 gap-6 items-stretch">
+        {/* Input Panel */}
+        <section className="lg:col-span-3 bg-surface-variant p-10 md:p-14 rounded-[3.5rem] border border-outline shadow-sm flex flex-col justify-between space-y-10">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <div className="space-y-3">
+              <label className="text-[10px] font-black uppercase tracking-widest ml-6 text-muted">Departure</label>
+              <select value={from} onChange={(e) => setFrom(e.target.value)} className="w-full bg-background p-5 rounded-[1.8rem] outline-none font-bold text-sm shadow-inner border border-transparent focus:border-rail-accent/20 cursor-pointer">
                 {stations.map(s => <option key={s} value={s}>{s}</option>)}
               </select>
             </div>
-            <div className="space-y-2">
-              <label className="text-[10px] font-black uppercase tracking-widest ml-4 dark:text-[#a9abb1]">To Destination</label>
-              <select 
-                value={to} 
-                onChange={(e) => setTo(e.target.value)}
-                className="w-full bg-white dark:bg-[#2e2f33] p-5 rounded-3xl outline-none font-bold text-sm appearance-none border border-transparent focus:border-rail-accent/30"
-              >
-                <option value="">Select Destination</option>
+            <div className="space-y-3">
+              <label className="text-[10px] font-black uppercase tracking-widest ml-6 text-muted">Destination</label>
+              <select value={to} onChange={(e) => setTo(e.target.value)} className="w-full bg-background p-5 rounded-[1.8rem] outline-none font-bold text-sm shadow-inner border border-transparent focus:border-rail-accent/20 cursor-pointer">
                 {stations.map(s => <option key={s} value={s}>{s}</option>)}
               </select>
             </div>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div className="space-y-2">
-              <label className="text-[10px] font-black uppercase tracking-widest ml-4 dark:text-[#a9abb1]">Class Type</label>
-              <div className="flex flex-wrap gap-2">
-                {Object.keys(classMultipliers).map(c => (
-                  <button 
-                    key={c} 
-                    onClick={() => setTrainClass(c)}
-                    className={`px-6 py-3 rounded-full text-[10px] font-black uppercase tracking-widest transition-all ${trainClass === c ? 'bg-rail-accent text-white shadow-lg' : 'bg-white dark:bg-[#2e2f33] dark:text-[#a9abb1]'}`}
-                  >
-                    {c}
-                  </button>
-                ))}
-              </div>
-            </div>
-            <div className="space-y-2">
-              <label className="text-[10px] font-black uppercase tracking-widest ml-4 dark:text-[#a9abb1]">Passenger Type</label>
-              <div className="flex gap-2">
-                {["Adult", "Child"].map(p => (
-                  <button 
-                    key={p} 
-                    onClick={() => setPassenger(p)}
-                    className={`flex-1 py-3 rounded-full text-[10px] font-black uppercase tracking-widest transition-all ${passenger === p ? 'bg-rail-accent text-white shadow-lg' : 'bg-white dark:bg-[#2e2f33] dark:text-[#a9abb1]'}`}
-                  >
-                    {p}
-                  </button>
-                ))}
-              </div>
-            </div>
+          <div className="space-y-3">
+            <label className="text-[10px] font-black uppercase tracking-widest ml-6 text-muted">Train Service</label>
+            <select value={selectedTrain} onChange={(e) => setSelectedTrain(e.target.value)} className="w-full bg-background p-5 rounded-[1.8rem] outline-none font-bold text-sm shadow-inner cursor-pointer border border-transparent focus:border-rail-accent/20">
+              {allTrainsList.map(t => <option key={t} value={t}>{t}</option>)}
+            </select>
           </div>
-        </div>
 
-        {/* Result Card */}
-        <div className="lg:col-span-1">
-          <div className="bg-rail-accent text-white p-10 rounded-[3.5rem] h-full flex flex-col justify-between shadow-2xl shadow-rail-accent/20 relative overflow-hidden group">
-            <div className="absolute -top-10 -right-10 w-40 h-40 bg-white/10 rounded-full blur-3xl group-hover:scale-150 transition-transform duration-700"></div>
-            
-            <div className="relative z-10">
-              <span className="material-symbols-rounded text-5xl mb-6">payments</span>
-              <h3 className="text-[11px] font-black uppercase tracking-[0.4em] opacity-80">Estimated Fare</h3>
-              {estimatedFare ? (
-                <div className="mt-4 animate-fade-in">
-                  <span className="text-sm font-bold opacity-70 italic">PKR</span>
-                  <div className="text-6xl font-black italic tracking-tighter leading-none">{estimatedFare}</div>
-                  <p className="text-[9px] mt-6 font-bold uppercase tracking-widest leading-relaxed opacity-80">
-                    *Approximate fare for {passenger} in {trainClass} from {from} to {to}.
-                  </p>
+          <div className="bg-background/50 p-8 rounded-[2.5rem] border border-outline/10">
+            <div className="flex flex-col md:flex-row gap-8">
+                <div className="flex-[2] space-y-4">
+                    <label className="text-[9px] font-black uppercase tracking-widest ml-2 text-muted">Class Category</label>
+                    <div className="grid grid-cols-2 gap-2">
+                        {["Economy", "AC Standard", "AC Business", "AC Sleeper", "AC Parlor"].map(c => (
+                        <button key={c} onClick={() => setTrainClass(c)} className={`py-3 rounded-xl text-[9px] font-black uppercase tracking-widest transition-all ${trainClass === c ? 'bg-rail-accent text-white shadow-lg' : 'bg-background text-muted hover:bg-outline/20'}`}>
+                            {c}
+                        </button>
+                        ))}
+                    </div>
                 </div>
+                <div className="w-px bg-outline/20 hidden md:block"></div>
+                <div className="flex-1 space-y-4">
+                    <label className="text-[9px] font-black uppercase tracking-widest ml-2 text-muted">Passenger</label>
+                    <div className="flex flex-col gap-2 h-full">
+                        {["Adult", "Child"].map(p => (
+                        <button key={p} onClick={() => setPassenger(p)} className={`flex-1 rounded-xl text-[9px] font-black uppercase tracking-widest transition-all ${passenger === p ? 'bg-rail-accent text-white shadow-lg' : 'bg-background text-muted hover:bg-outline/20'}`}>
+                            {p}
+                        </button>
+                        ))}
+                    </div>
+                </div>
+            </div>
+          </div>
+        </section>
+
+        <aside className="lg:col-span-2">
+          <div className="bg-rail-accent text-white p-12 md:p-14 rounded-[4rem] h-full flex flex-col justify-between shadow-2xl relative overflow-hidden group border border-white/10">
+            <div className="relative z-10">
+              <h2 className="text-[11px] font-black uppercase tracking-[0.5em] opacity-60 mb-8 italic">Final Estimate</h2>
+              {estimatedFare ? (
+                <article className="animate-fade-in">
+                  <span className="text-lg font-bold opacity-50 italic block tracking-[0.2em] mb-2">PKR</span>
+                  {/* Dynamic Font Size + Integer Only */}
+                  <div className={`font-black italic tracking-tighter leading-[0.8] mb-12 hero-title transition-all duration-500 ${
+                      estimatedFare >= 10000 ? 'text-[5rem] md:text-[7rem]' : 'text-[6rem] md:text-[8.5rem]'
+                  }`}>
+                    {estimatedFare}
+                  </div>
+                  <div className="space-y-3 border-t border-white/10 pt-8 text-[9px] font-black uppercase tracking-[0.3em] opacity-60">
+                    <div className="flex justify-between"><span>Train</span> <span>{selectedTrain}</span></div>
+                    <div className="flex justify-between"><span>Selection</span> <span>{trainClass} • {passenger}</span></div>
+                  </div>
+                </article>
               ) : (
-                <p className="mt-6 text-sm font-bold italic opacity-70 leading-relaxed">
-                  Please select origin and destination to see fare.
-                </p>
+                <p className="mt-8 text-sm font-medium italic opacity-50">Select valid routes to calculate.</p>
               )}
             </div>
 
-            <Link 
-              href="https://pakrail.gov.pk" 
-              target="_blank"
-              className="relative z-10 w-full bg-white text-rail-accent py-5 rounded-full font-black uppercase tracking-widest text-[11px] text-center shadow-xl active:scale-95 transition-all mt-10"
-            >
-              Book Now
-            </Link>
+            <div className="mt-10 p-6 bg-white/5 border border-white/10 rounded-3xl">
+  <p className="text-[9px] font-medium italic opacity-60 leading-relaxed">
+    Note: These fares are based on 2026 tariff adjustments. Please visit official railway counters for final ticket issuance.
+  </p>
+</div>
           </div>
-        </div>
+        </aside>
       </div>
 
-      {/* Info Section */}
-      <div className="mt-20 grid grid-cols-1 md:grid-cols-2 gap-10">
-        <div className="bg-[#f2f0f4] dark:bg-[#1b1b1f] p-10 rounded-[2.5rem]">
-          <h4 className="text-xl font-black italic uppercase mb-6 flex items-center gap-3">
-            <span className="material-symbols-rounded text-rail-accent">info</span>
-            Class Differences
-          </h4>
-          <ul className="space-y-4">
-            <li className="flex justify-between text-xs font-bold uppercase border-b border-gray-300 dark:border-white/5 pb-2">
-              <span className="dark:text-[#a9abb1]">AC Sleeper</span>
-              <span className="text-rail-accent italic">Cabin + Bedding</span>
-            </li>
-            <li className="flex justify-between text-xs font-bold uppercase border-b border-gray-300 dark:border-white/5 pb-2">
-              <span className="dark:text-[#a9abb1]">AC Business</span>
-              <span className="text-rail-accent italic">Semi-Private + AC</span>
-            </li>
-            <li className="flex justify-between text-xs font-bold uppercase pb-2">
-              <span className="dark:text-[#a9abb1]">Economy</span>
-              <span className="text-rail-accent italic">Standard Seating</span>
-            </li>
-          </ul>
-        </div>
-        <div className="flex flex-col justify-center p-4">
-            <p className="text-[10px] dark:text-[#a9abb1] font-bold uppercase tracking-[0.2em] italic leading-relaxed">
-              Note: The fares shown are estimates based on standard route pricing. Actual fares may vary depending on the specific train (Express vs. Passenger) and seasonal adjustments by Pakistan Railways.
-            </p>
-        </div>
-      </div>
+      <footer className="mt-10 bg-surface-variant/50 p-8 rounded-[3rem] border border-outline/30 flex flex-col md:flex-row gap-8 justify-around">
+          <div className="max-w-[250px] text-center md:text-left">
+              <p className="text-[10px] font-black uppercase text-rail-accent mb-2">Rounding Policy[cite: 1]</p>
+              <p className="text-[9px] text-muted font-medium italic">Adjusted to nearest 50/100 blocks. No decimal values.</p>
+          </div>
+          <div className="max-w-[250px] text-center md:text-left">
+              <p className="text-[10px] font-black uppercase text-rail-accent mb-2">Berth Surcharge[cite: 1]</p>
+              <p className="text-[9px] text-muted font-medium italic">Rs. 50 (up to 500KM) / Rs. 100 (above) for Economy.</p>
+          </div>
+          <div className="max-w-[250px] text-center md:text-left">
+              <p className="text-[10px] font-black uppercase text-rail-accent mb-2">2026 Crisis Hike</p>
+              <p className="text-[9px] text-muted font-medium italic">Includes +10% Economy and +15% AC Class adjustments.</p>
+          </div>
+      </footer>
     </main>
   );
 }

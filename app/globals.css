@@ -3,15 +3,15 @@
 :root {
   --rail-accent: #4f46e5; /* Signature Blue */
   --background: #ffffff;
-  --foreground: #111827;
+  --foreground: #080808;
   --surface-variant: #f3f4f6;
   --outline: #d1d5db;
 }
 
 .dark {
-  --background: #0a0f1a; /* Deep Navy Dark Mode */
+  --background: #000000; /* Deep Navy Dark Mode */
   --foreground: #ffffff;
-  --surface-variant: #1f2937;
+  --surface-variant: #000408;
   --outline: #374151;
 }
 

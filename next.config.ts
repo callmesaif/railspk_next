@@ -1,14 +1,24 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  output: "export",      // Static HTML export ke liye
-  distDir: 'out',        // Build folder ka naam
-  trailingSlash: true,   // /about/index.html wala structure banaye ga
+  output: "export",      // Static HTML export
+  distDir: 'out',        // Build folder
+  trailingSlash: true,   // /about/index.html structure
   images: {
-    unoptimized: true,   // Static export mein image optimization off karni parti hai
+    unoptimized: true,   // Required for static export
   },
   typescript: {
-    ignoreBuildErrors: true, // Build ko crash hone se bachane ke liye
+    ignoreBuildErrors: true, 
+  },
+  // Note: Ye redirects 'output: export' ke saath kaam nahi karein ge
+  async redirects() {
+    return [
+      {
+        source: '/index.html',
+        destination: '/',
+        permanent: true,
+      },
+    ]
   },
 };
 
